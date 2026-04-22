@@ -1,7 +1,6 @@
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { PetCase, Vet } from "@/types/pet";
 import { TERESINA_CENTER } from "@/data/mockData";
 import { isUrgent } from "@/lib/petHelpers";
@@ -62,14 +61,6 @@ function buildVetIcon() {
   });
 }
 
-function Recenter({ center }: { center: [number, number] }) {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center, map.getZoom());
-  }, [center, map]);
-  return null;
-}
-
 export function PetMap({
   pets,
   vets = [],
@@ -79,38 +70,71 @@ export function PetMap({
   className,
 }: Props) {
   const center = useMemo<[number, number]>(() => TERESINA_CENTER, []);
+  const mapElementRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.LayerGroup | null>(null);
+  const vetsRef = useRef<L.LayerGroup | null>(null);
+
+  useEffect(() => {
+    if (!mapElementRef.current || mapRef.current) return;
+
+    const map = L.map(mapElementRef.current, {
+      zoomControl: false,
+      scrollWheelZoom: true,
+      attributionControl: true,
+    }).setView(center, 13);
+
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+      attribution: "&copy; OpenStreetMap",
+    }).addTo(map);
+
+    markersRef.current = L.layerGroup().addTo(map);
+    vetsRef.current = L.layerGroup().addTo(map);
+    mapRef.current = map;
+
+    requestAnimationFrame(() => map.invalidateSize());
+
+    return () => {
+      markersRef.current?.clearLayers();
+      vetsRef.current?.clearLayers();
+      map.remove();
+      mapRef.current = null;
+      markersRef.current = null;
+      vetsRef.current = null;
+    };
+  }, [center]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const markerLayer = markersRef.current;
+    const vetLayer = vetsRef.current;
+    if (!map || !markerLayer || !vetLayer) return;
+
+    markerLayer.clearLayers();
+    vetLayer.clearLayers();
+
+    pets.forEach((p) => {
+      const marker = L.marker([p.lat, p.lng], {
+        icon: buildPetIcon(p, selectedId === p.id),
+      });
+
+      marker.on("click", () => onSelect?.(p.id));
+      marker.addTo(markerLayer);
+    });
+
+    if (showVets) {
+      vets.forEach((v) => {
+        L.marker([v.lat, v.lng], { icon: buildVetIcon() }).addTo(vetLayer);
+      });
+    }
+
+    map.setView(center, map.getZoom(), { animate: false });
+    requestAnimationFrame(() => map.invalidateSize());
+  }, [pets, vets, selectedId, onSelect, showVets, center]);
 
   return (
     <div className={className}>
-      <MapContainer
-        center={center}
-        zoom={13}
-        scrollWheelZoom
-        className="size-full"
-        zoomControl={false}
-      >
-        <TileLayer
-          attribution='&copy; OpenStreetMap'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-        />
-        <Recenter center={center} />
-        {pets.map((p) => (
-          <Marker
-            key={p.id}
-            position={[p.lat, p.lng]}
-            icon={buildPetIcon(p, selectedId === p.id)}
-            eventHandlers={{ click: () => onSelect?.(p.id) }}
-          />
-        ))}
-        {showVets &&
-          vets.map((v) => (
-            <Marker
-              key={v.id}
-              position={[v.lat, v.lng]}
-              icon={buildVetIcon()}
-            />
-          ))}
-      </MapContainer>
+      <div ref={mapElementRef} className="size-full" />
     </div>
   );
 }
