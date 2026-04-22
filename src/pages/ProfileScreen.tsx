@@ -94,9 +94,18 @@ export default function ProfileScreen() {
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10" />
         <div className="absolute -right-12 -bottom-12 size-32 rounded-full bg-white/10" />
         <div className="relative flex items-center gap-4">
-          <div className="size-16 rounded-full bg-white/95 text-primary grid place-items-center font-display font-bold text-2xl shadow-soft">
-            V
-          </div>
+          {u.avatarUrl ? (
+            <img
+              src={u.avatarUrl}
+              alt={u.name}
+              referrerPolicy="no-referrer"
+              className="size-16 rounded-full object-cover ring-2 ring-white/70 shadow-soft"
+            />
+          ) : (
+            <div className="size-16 rounded-full bg-white/95 text-primary grid place-items-center font-display font-bold text-2xl shadow-soft">
+              {u.name.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div className="flex-1">
             <h2 className="font-display font-bold text-lg leading-tight">{u.name}</h2>
             <div className="flex items-center gap-1 text-xs opacity-90 mt-0.5">
