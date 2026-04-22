@@ -3,7 +3,7 @@ import { MobileShell } from "@/components/MobileShell";
 import { FilterChips } from "@/components/FilterChips";
 import { PetCard } from "@/components/PetCard";
 import { mockPets } from "@/data/mockData";
-import { Bell, Search } from "lucide-react";
+import { Bell, Search, X } from "lucide-react";
 
 const cats = [
   { id: "all", label: "Todos" },
@@ -16,16 +16,26 @@ const cats = [
 
 export default function ExploreScreen() {
   const [filter, setFilter] = useState("all");
+  const [query, setQuery] = useState("");
+
   const list = useMemo(() => {
-    if (filter === "all") return mockPets;
+    let base = mockPets;
     if (filter === "urgent")
-      return mockPets.filter((p) => p.status === "urgent" || p.status === "injured");
-    if (filter === "dog") return mockPets.filter((p) => p.species === "dog");
-    if (filter === "cat") return mockPets.filter((p) => p.species === "cat");
-    if (filter === "injured") return mockPets.filter((p) => p.status === "injured");
-    if (filter === "fed") return mockPets.filter((p) => p.status === "fed");
-    return mockPets;
-  }, [filter]);
+      base = base.filter((p) => p.status === "urgent" || p.status === "injured");
+    else if (filter === "dog") base = base.filter((p) => p.species === "dog");
+    else if (filter === "cat") base = base.filter((p) => p.species === "cat");
+    else if (filter === "injured") base = base.filter((p) => p.status === "injured");
+    else if (filter === "fed") base = base.filter((p) => p.status === "fed");
+
+    const q = query.trim().toLowerCase();
+    if (!q) return base;
+    return base.filter((p) =>
+      [p.title, p.description, p.neighborhood, p.address, p.color]
+        .join(" ")
+        .toLowerCase()
+        .includes(q),
+    );
+  }, [filter, query]);
 
   return (
     <MobileShell>
@@ -45,12 +55,24 @@ export default function ExploreScreen() {
         </button>
       </header>
 
-      <div className="mt-5 flex items-center gap-3 rounded-full bg-card border border-border px-4 py-3 shadow-soft">
+      <div className="mt-5 flex items-center gap-3 rounded-full bg-card border border-border px-4 py-3 shadow-soft focus-within:border-primary transition-colors">
         <Search className="size-4 text-muted-foreground" />
         <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           placeholder="Buscar por bairro, rua ou descrição"
           className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          aria-label="Buscar casos"
         />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            aria-label="Limpar busca"
+            className="size-6 rounded-full bg-muted grid place-items-center text-muted-foreground hover:text-foreground"
+          >
+            <X className="size-3.5" />
+          </button>
+        )}
       </div>
 
       <div className="mt-5">
@@ -59,14 +81,26 @@ export default function ExploreScreen() {
 
       <section className="mt-6">
         <div className="flex items-baseline justify-between mb-3">
-          <h2 className="font-display font-bold text-lg">Perto de ti</h2>
+          <h2 className="font-display font-bold text-lg">
+            {query ? `Resultados para "${query}"` : "Perto de ti"}
+          </h2>
           <span className="text-xs text-muted-foreground">{list.length} casos</span>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          {list.map((p) => (
-            <PetCard key={p.id} pet={p} />
-          ))}
-        </div>
+        {list.length === 0 ? (
+          <div className="rounded-3xl bg-card border border-border p-8 text-center shadow-soft">
+            <div className="text-3xl mb-2">🔍</div>
+            <p className="text-sm font-semibold">Nenhum caso encontrado</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Tenta outro bairro ou ajusta os filtros.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {list.map((p) => (
+              <PetCard key={p.id} pet={p} />
+            ))}
+          </div>
+        )}
       </section>
     </MobileShell>
   );
