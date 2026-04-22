@@ -1,15 +1,80 @@
+import { useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { mockUser, ranking } from "@/data/mockData";
-import { Settings, Trophy, Heart, MapPin, Award } from "lucide-react";
+import {
+  Settings,
+  Trophy,
+  Heart,
+  MapPin,
+  Award,
+  Bell,
+  Lock,
+  Globe,
+  Moon,
+  HelpCircle,
+  Info,
+  Star,
+  Share2,
+  LogOut,
+  ChevronRight,
+  UserCog,
+  MapPinned,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "@/hooks/use-toast";
 
 export default function ProfileScreen() {
   const u = mockUser;
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [notifUrgent, setNotifUrgent] = useState(true);
+  const [notifNearby, setNotifNearby] = useState(true);
+  const [notifUpdates, setNotifUpdates] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [shareLocation, setShareLocation] = useState(true);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: "PataAjuda · Teresina",
+      text: "Junta-te a mim para ajudar animais abandonados em Teresina 🐾",
+      url: window.location.origin,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        toast({ title: "Link copiado", description: "Partilha com a tua comunidade." });
+      }
+    } catch {
+      // utilizador cancelou
+    }
+  };
+
+  const handleLogout = () => {
+    toast({
+      title: "Sessão terminada",
+      description: "Voltaremos em breve. Obrigado por ajudar 🐾",
+    });
+    setSettingsOpen(false);
+  };
+
   return (
     <MobileShell>
       <header className="flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold">Perfil</h1>
-        <button className="size-10 rounded-full bg-card border border-border grid place-items-center">
+        <button
+          onClick={() => setSettingsOpen(true)}
+          aria-label="Abrir configurações"
+          className="size-10 rounded-full bg-card border border-border grid place-items-center hover:bg-muted transition-colors active:scale-95"
+        >
           <Settings className="size-5" />
         </button>
       </header>
@@ -113,6 +178,270 @@ export default function ProfileScreen() {
           })}
         </div>
       </section>
+
+      <SettingsSheet
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        user={u}
+        notifUrgent={notifUrgent}
+        setNotifUrgent={setNotifUrgent}
+        notifNearby={notifNearby}
+        setNotifNearby={setNotifNearby}
+        notifUpdates={notifUpdates}
+        setNotifUpdates={setNotifUpdates}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        shareLocation={shareLocation}
+        setShareLocation={setShareLocation}
+        onShare={handleShare}
+        onLogout={handleLogout}
+      />
     </MobileShell>
+  );
+}
+
+type SettingsSheetProps = {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  user: typeof mockUser;
+  notifUrgent: boolean;
+  setNotifUrgent: (v: boolean) => void;
+  notifNearby: boolean;
+  setNotifNearby: (v: boolean) => void;
+  notifUpdates: boolean;
+  setNotifUpdates: (v: boolean) => void;
+  darkMode: boolean;
+  setDarkMode: (v: boolean) => void;
+  shareLocation: boolean;
+  setShareLocation: (v: boolean) => void;
+  onShare: () => void;
+  onLogout: () => void;
+};
+
+function SettingsSheet({
+  open,
+  onOpenChange,
+  user,
+  notifUrgent,
+  setNotifUrgent,
+  notifNearby,
+  setNotifNearby,
+  notifUpdates,
+  setNotifUpdates,
+  darkMode,
+  setDarkMode,
+  shareLocation,
+  setShareLocation,
+  onShare,
+  onLogout,
+}: SettingsSheetProps) {
+  const notify = (title: string) =>
+    toast({ title, description: "Disponível em breve." });
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="bottom"
+        className="rounded-t-3xl max-h-[88vh] overflow-y-auto p-0 border-border"
+      >
+        <div className="mx-auto mt-2 h-1.5 w-10 rounded-full bg-muted" />
+        <SheetHeader className="px-5 pt-4 pb-2 text-left">
+          <SheetTitle className="font-display text-xl">Configurações</SheetTitle>
+          <SheetDescription>
+            Personaliza a tua experiência no app.
+          </SheetDescription>
+        </SheetHeader>
+
+        <div className="px-5 pb-8 space-y-6">
+          {/* Conta */}
+          <div className="flex items-center gap-3 rounded-2xl bg-card border border-border p-3 shadow-soft">
+            <div className="size-12 rounded-full gradient-primary text-primary-foreground grid place-items-center font-display font-bold text-lg">
+              {user.name.charAt(0)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold truncate">{user.name}</div>
+              <div className="text-xs text-muted-foreground truncate">
+                {user.city} · Nível {user.level}
+              </div>
+            </div>
+            <button
+              onClick={() => notify("Editar perfil")}
+              className="text-xs font-semibold text-primary px-3 py-1.5 rounded-full bg-primary-soft"
+            >
+              Editar
+            </button>
+          </div>
+
+          <SettingsGroup title="Notificações">
+            <SettingsToggle
+              icon={<Bell className="size-4" />}
+              label="Casos urgentes perto de mim"
+              hint="Alertas imediatos para animais em risco"
+              checked={notifUrgent}
+              onChange={setNotifUrgent}
+            />
+            <SettingsToggle
+              icon={<MapPinned className="size-4" />}
+              label="Novos casos no meu bairro"
+              checked={notifNearby}
+              onChange={setNotifNearby}
+            />
+            <SettingsToggle
+              icon={<Heart className="size-4" />}
+              label="Atualizações dos meus resgates"
+              checked={notifUpdates}
+              onChange={setNotifUpdates}
+            />
+          </SettingsGroup>
+
+          <SettingsGroup title="Privacidade">
+            <SettingsToggle
+              icon={<MapPin className="size-4" />}
+              label="Partilhar localização aproximada"
+              hint="Ajuda a mostrar casos relevantes"
+              checked={shareLocation}
+              onChange={setShareLocation}
+            />
+            <SettingsRow
+              icon={<Lock className="size-4" />}
+              label="Privacidade e dados"
+              onClick={() => notify("Privacidade e dados")}
+            />
+            <SettingsRow
+              icon={<UserCog className="size-4" />}
+              label="Gerir conta"
+              onClick={() => notify("Gerir conta")}
+            />
+          </SettingsGroup>
+
+          <SettingsGroup title="Preferências">
+            <SettingsToggle
+              icon={<Moon className="size-4" />}
+              label="Modo escuro"
+              checked={darkMode}
+              onChange={(v) => {
+                setDarkMode(v);
+                document.documentElement.classList.toggle("dark", v);
+              }}
+            />
+            <SettingsRow
+              icon={<Globe className="size-4" />}
+              label="Idioma"
+              value="Português"
+              onClick={() => notify("Idioma")}
+            />
+          </SettingsGroup>
+
+          <SettingsGroup title="Comunidade">
+            <SettingsRow
+              icon={<Share2 className="size-4" />}
+              label="Convidar amigos"
+              onClick={onShare}
+            />
+            <SettingsRow
+              icon={<Star className="size-4" />}
+              label="Avaliar o app"
+              onClick={() => notify("Avaliar o app")}
+            />
+            <SettingsRow
+              icon={<HelpCircle className="size-4" />}
+              label="Ajuda e suporte"
+              onClick={() => notify("Ajuda e suporte")}
+            />
+            <SettingsRow
+              icon={<Info className="size-4" />}
+              label="Sobre"
+              value="v1.0.0"
+              onClick={() => notify("Sobre")}
+            />
+          </SettingsGroup>
+
+          <button
+            onClick={onLogout}
+            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-destructive/30 bg-destructive/5 text-destructive font-semibold py-3 text-sm active:scale-[0.99] transition"
+          >
+            <LogOut className="size-4" /> Terminar sessão
+          </button>
+
+          <p className="text-center text-[11px] text-muted-foreground">
+            Feito com 🐾 em Teresina
+          </p>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function SettingsGroup({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold px-1 mb-2">
+        {title}
+      </div>
+      <div className="rounded-2xl bg-card border border-border shadow-soft divide-y divide-border overflow-hidden">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function SettingsRow({
+  icon,
+  label,
+  value,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value?: string;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/40 active:bg-muted transition-colors"
+    >
+      <span className="size-8 rounded-full bg-primary-soft text-primary grid place-items-center">
+        {icon}
+      </span>
+      <span className="flex-1 text-sm font-medium">{label}</span>
+      {value && <span className="text-xs text-muted-foreground">{value}</span>}
+      <ChevronRight className="size-4 text-muted-foreground" />
+    </button>
+  );
+}
+
+function SettingsToggle({
+  icon,
+  label,
+  hint,
+  checked,
+  onChange,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  hint?: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center gap-3 px-4 py-3">
+      <span className="size-8 rounded-full bg-primary-soft text-primary grid place-items-center">
+        {icon}
+      </span>
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-medium leading-tight">{label}</div>
+        {hint && (
+          <div className="text-[11px] text-muted-foreground mt-0.5">{hint}</div>
+        )}
+      </div>
+      <Switch checked={checked} onCheckedChange={onChange} />
+    </div>
   );
 }
