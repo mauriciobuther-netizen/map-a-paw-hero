@@ -15,7 +15,7 @@ export function BottomNavigation() {
   return (
     <nav
       aria-label="Navegação principal"
-      className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-1.5rem)] max-w-[460px]"
+      className="fixed bottom-3 left-1/2 -translate-x-1/2 z-[1100] w-[calc(100%-1.5rem)] max-w-[460px]"
     >
       <div className="flex items-center justify-between gap-1 rounded-full bg-card/95 backdrop-blur-xl px-2 py-2 shadow-elegant border border-border/60">
         {items.map(({ to, label, icon: Icon, primary }) => {
