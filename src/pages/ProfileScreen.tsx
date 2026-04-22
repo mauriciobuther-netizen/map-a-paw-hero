@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { mockUser, ranking } from "@/data/mockData";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   Settings,
   Trophy,
@@ -32,7 +34,14 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 
 export default function ProfileScreen() {
-  const u = mockUser;
+  const { profile, user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const u = {
+    ...mockUser,
+    name: profile?.full_name || user?.email?.split("@")[0] || mockUser.name,
+    city: profile?.city || mockUser.city,
+    avatarUrl: profile?.avatar_url ?? null,
+  };
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [notifUrgent, setNotifUrgent] = useState(true);
   const [notifNearby, setNotifNearby] = useState(true);
@@ -58,12 +67,14 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     toast({
       title: "Sessão terminada",
-      description: "Voltaremos em breve. Obrigado por ajudar 🐾",
+      description: "Obrigado por ajudar 🐾",
     });
     setSettingsOpen(false);
+    navigate("/auth", { replace: true });
   };
 
   return (
