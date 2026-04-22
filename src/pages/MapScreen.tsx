@@ -1,0 +1,108 @@
+import { useMemo, useState } from "react";
+import { MobileShell } from "@/components/MobileShell";
+import { PetMap } from "@/components/PetMap";
+import { FilterChips } from "@/components/FilterChips";
+import { mockPets, mockVets } from "@/data/mockData";
+import { PetCard } from "@/components/PetCard";
+import { Search, LocateFixed, Layers } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const filters = [
+  { id: "all", label: "Todos" },
+  { id: "urgent", label: "Urgente", icon: "🚨" },
+  { id: "dog", label: "Cães", icon: "🐶" },
+  { id: "cat", label: "Gatos", icon: "🐱" },
+  { id: "injured", label: "Feridos" },
+  { id: "recent", label: "Recentes" },
+  { id: "resolved", label: "Resolvidos" },
+];
+
+export default function MapScreen() {
+  const [filter, setFilter] = useState("all");
+  const [selected, setSelected] = useState<string | undefined>();
+
+  const pets = useMemo(() => {
+    switch (filter) {
+      case "urgent":
+        return mockPets.filter((p) => p.status === "urgent" || p.status === "injured");
+      case "dog":
+        return mockPets.filter((p) => p.species === "dog");
+      case "cat":
+        return mockPets.filter((p) => p.species === "cat");
+      case "injured":
+        return mockPets.filter((p) => p.status === "injured");
+      case "recent":
+        return [...mockPets].sort(
+          (a, b) => +new Date(b.reportedAt) - +new Date(a.reportedAt),
+        );
+      case "resolved":
+        return mockPets.filter(
+          (p) => p.status === "rescued" || p.status === "adopted" || p.status === "closed",
+        );
+      default:
+        return mockPets;
+    }
+  }, [filter]);
+
+  const selectedPet = pets.find((p) => p.id === selected);
+
+  return (
+    <div className="min-h-screen bg-secondary/40">
+      <div className="mobile-shell relative overflow-hidden">
+        {/* Mapa em fullscreen */}
+        <div className="absolute inset-0">
+          <PetMap
+            pets={pets}
+            vets={mockVets}
+            selectedId={selected}
+            onSelect={setSelected}
+            className="size-full"
+          />
+        </div>
+
+        {/* Header flutuante */}
+        <div className="relative z-10 px-5 pt-5">
+          <div className="flex items-center gap-2">
+            <Link
+              to="/app/explore"
+              className="flex-1 flex items-center gap-3 rounded-full bg-card/95 backdrop-blur-xl pl-5 pr-2 py-2 shadow-elegant border border-border/60"
+            >
+              <Search className="size-4 text-muted-foreground" />
+              <div className="flex-1 text-left">
+                <div className="text-sm font-semibold leading-tight">Teresina, PI</div>
+                <div className="text-[11px] text-muted-foreground leading-tight">
+                  {pets.length} casos ativos perto de ti
+                </div>
+              </div>
+              <div className="size-9 rounded-full gradient-primary grid place-items-center text-primary-foreground">
+                <Layers className="size-4" />
+              </div>
+            </Link>
+          </div>
+
+          <div className="mt-4">
+            <FilterChips chips={filters} active={filter} onChange={setFilter} />
+          </div>
+        </div>
+
+        {/* Botão localizar */}
+        <button
+          aria-label="Centralizar"
+          className="absolute right-5 bottom-44 z-10 size-12 rounded-full bg-card shadow-elegant grid place-items-center border border-border/60"
+        >
+          <LocateFixed className="size-5 text-foreground" />
+        </button>
+
+        {/* Card flutuante do pin selecionado */}
+        {selectedPet && (
+          <div className="absolute bottom-28 left-4 right-4 z-10 animate-float-up">
+            <PetCard pet={selectedPet} variant="compact" />
+          </div>
+        )}
+
+        {/* Espaçador para a altura do shell */}
+        <div className="h-screen" />
+      </div>
+    </div>
+  );
+}
