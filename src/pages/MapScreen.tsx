@@ -48,9 +48,9 @@ export default function MapScreen() {
 
   return (
     <div className="min-h-screen bg-secondary/40">
-      <div className="mobile-shell relative overflow-hidden">
+      <div className="mobile-shell relative overflow-hidden isolate">
         {/* Mapa em fullscreen */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 z-0">
           <PetMap
             pets={pets}
             vets={mockVets}
@@ -61,11 +61,11 @@ export default function MapScreen() {
         </div>
 
         {/* Header flutuante */}
-        <div className="relative z-10 px-5 pt-5">
+        <div className="absolute inset-x-0 top-0 z-[1000] px-5 pt-5 pointer-events-none">
           <div className="flex items-center gap-2">
             <Link
               to="/app/explore"
-              className="flex-1 flex items-center gap-3 rounded-full bg-card/95 backdrop-blur-xl pl-5 pr-2 py-2 shadow-elegant border border-border/60"
+              className="pointer-events-auto flex-1 flex items-center gap-3 rounded-full bg-card/95 backdrop-blur-xl pl-5 pr-2 py-2 shadow-elegant border border-border/60"
             >
               <Search className="size-4 text-muted-foreground" />
               <div className="flex-1 text-left">
@@ -80,7 +80,7 @@ export default function MapScreen() {
             </Link>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-4 pointer-events-auto">
             <FilterChips chips={filters} active={filter} onChange={setFilter} />
           </div>
         </div>
@@ -88,14 +88,14 @@ export default function MapScreen() {
         {/* Botão localizar */}
         <button
           aria-label="Centralizar"
-          className="absolute right-5 bottom-44 z-10 size-12 rounded-full bg-card shadow-elegant grid place-items-center border border-border/60"
+          className="absolute right-5 bottom-44 z-[1000] size-12 rounded-full bg-card shadow-elegant grid place-items-center border border-border/60"
         >
           <LocateFixed className="size-5 text-foreground" />
         </button>
 
         {/* Card flutuante do pin selecionado */}
         {selectedPet && (
-          <div className="absolute bottom-28 left-4 right-4 z-10 animate-float-up">
+          <div className="absolute bottom-28 left-4 right-4 z-[1000] animate-float-up">
             <PetCard pet={selectedPet} variant="compact" />
           </div>
         )}
