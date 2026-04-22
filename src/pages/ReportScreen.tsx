@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
-import { Camera, MapPin, Dog, Cat, ChevronRight } from "lucide-react";
+import { Camera, MapPin, Dog, Cat, ChevronRight, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ReportScreen() {
   const [species, setSpecies] = useState<"dog" | "cat" | null>(null);
   const [behaviors, setBehaviors] = useState<string[]>([]);
   const [desc, setDesc] = useState("");
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [photoPath, setPhotoPath] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const behaviorOptions = ["Assustado", "Agressivo", "Dócil", "Ferido", "Faminto", "Perdido"];
@@ -20,7 +27,63 @@ export default function ReportScreen() {
     );
   }
 
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    if (!user) {
+      toast.error("Inicia sessão para adicionar foto.");
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      toast.error("Ficheiro inválido", { description: "Escolhe uma imagem." });
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      toast.error("Imagem muito grande", { description: "Máximo 8 MB." });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+      const { error } = await supabase.storage
+        .from("pet-photos")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (error) throw error;
+
+      const { data } = supabase.storage.from("pet-photos").getPublicUrl(path);
+      setPhotoUrl(data.publicUrl);
+      setPhotoPath(path);
+      toast.success("Foto adicionada");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Tenta novamente.";
+      toast.error("Falha no upload", { description: msg });
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function removePhoto() {
+    if (photoPath) {
+      await supabase.storage.from("pet-photos").remove([photoPath]);
+    }
+    setPhotoUrl(null);
+    setPhotoPath(null);
+  }
+
   function publish() {
+    if (!photoUrl) {
+      toast.error("Adiciona uma foto do animal");
+      return;
+    }
+    if (!species) {
+      toast.error("Seleciona a espécie");
+      return;
+    }
     toast.success("Caso publicado com sucesso!", {
       description: "A comunidade já pode ajudar este animal.",
     });
@@ -43,15 +106,55 @@ export default function ReportScreen() {
       </header>
 
       <section className="mt-6">
-        <button className="w-full aspect-[5/3] rounded-3xl bg-card border-2 border-dashed border-border grid place-items-center text-muted-foreground hover:border-primary hover:text-primary transition shadow-soft">
-          <div className="flex flex-col items-center gap-2">
-            <div className="size-14 rounded-full gradient-primary grid place-items-center text-primary-foreground shadow-glow">
-              <Camera className="size-6" />
-            </div>
-            <span className="text-sm font-medium">Adicionar foto do animal</span>
-            <span className="text-xs opacity-70">Toca para tirar ou escolher</span>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handlePhotoChange}
+          className="hidden"
+          aria-hidden="true"
+        />
+        {photoUrl ? (
+          <div className="relative w-full aspect-[5/3] rounded-3xl overflow-hidden shadow-soft border border-border">
+            <img src={photoUrl} alt="Foto do animal" className="size-full object-cover" />
+            <button
+              onClick={removePhoto}
+              aria-label="Remover foto"
+              className="absolute top-3 right-3 size-9 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft active:scale-95"
+            >
+              <X className="size-4" />
+            </button>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute bottom-3 right-3 px-3 py-1.5 rounded-full bg-background/90 backdrop-blur text-xs font-semibold shadow-soft"
+            >
+              Trocar foto
+            </button>
           </div>
-        </button>
+        ) : (
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="w-full aspect-[5/3] rounded-3xl bg-card border-2 border-dashed border-border grid place-items-center text-muted-foreground hover:border-primary hover:text-primary transition shadow-soft disabled:opacity-70"
+          >
+            <div className="flex flex-col items-center gap-2">
+              <div className="size-14 rounded-full gradient-primary grid place-items-center text-primary-foreground shadow-glow">
+                {uploading ? (
+                  <Loader2 className="size-6 animate-spin" />
+                ) : (
+                  <Camera className="size-6" />
+                )}
+              </div>
+              <span className="text-sm font-medium">
+                {uploading ? "A enviar foto..." : "Adicionar foto do animal"}
+              </span>
+              <span className="text-xs opacity-70">
+                {uploading ? "Aguarda um momento" : "Toca para tirar ou escolher"}
+              </span>
+            </div>
+          </button>
+        )}
       </section>
 
       <section className="mt-6">
