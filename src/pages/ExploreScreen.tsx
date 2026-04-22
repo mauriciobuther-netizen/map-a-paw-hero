@@ -18,6 +18,15 @@ export default function ExploreScreen() {
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
 
+  const normalize = (s: string) =>
+    s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
   const list = useMemo(() => {
     let base = mockPets;
     if (filter === "urgent")
@@ -27,14 +36,15 @@ export default function ExploreScreen() {
     else if (filter === "injured") base = base.filter((p) => p.status === "injured");
     else if (filter === "fed") base = base.filter((p) => p.status === "fed");
 
-    const q = query.trim().toLowerCase();
+    const q = normalize(query);
     if (!q) return base;
-    return base.filter((p) =>
-      [p.title, p.description, p.neighborhood, p.address, p.color]
-        .join(" ")
-        .toLowerCase()
-        .includes(q),
-    );
+    const terms = q.split(" ").filter(Boolean);
+    return base.filter((p) => {
+      const haystack = normalize(
+        [p.title, p.description, p.neighborhood, p.address, p.color].join(" "),
+      );
+      return terms.every((t) => haystack.includes(t));
+    });
   }, [filter, query]);
 
   return (
