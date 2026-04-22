@@ -31,7 +31,7 @@ export default function Onboarding() {
   const last = step === slides.length - 1;
 
   function next() {
-    if (last) navigate("/app/map");
+    if (last) navigate("/auth");
     else setStep((s) => s + 1);
   }
 
@@ -47,7 +47,7 @@ export default function Onboarding() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
           <button
-            onClick={() => navigate("/app/map")}
+            onClick={() => navigate("/auth")}
             className="absolute top-5 right-5 text-sm text-white/90 bg-black/25 backdrop-blur px-4 py-1.5 rounded-full"
           >
             Saltar

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { mockUser, ranking } from "@/data/mockData";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   Settings,
   Trophy,
@@ -32,7 +34,14 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 
 export default function ProfileScreen() {
-  const u = mockUser;
+  const { profile, user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const u = {
+    ...mockUser,
+    name: profile?.full_name || user?.email?.split("@")[0] || mockUser.name,
+    city: profile?.city || mockUser.city,
+    avatarUrl: profile?.avatar_url ?? null,
+  };
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [notifUrgent, setNotifUrgent] = useState(true);
   const [notifNearby, setNotifNearby] = useState(true);
@@ -58,12 +67,14 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     toast({
       title: "Sessão terminada",
-      description: "Voltaremos em breve. Obrigado por ajudar 🐾",
+      description: "Obrigado por ajudar 🐾",
     });
     setSettingsOpen(false);
+    navigate("/auth", { replace: true });
   };
 
   return (
@@ -83,9 +94,18 @@ export default function ProfileScreen() {
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10" />
         <div className="absolute -right-12 -bottom-12 size-32 rounded-full bg-white/10" />
         <div className="relative flex items-center gap-4">
-          <div className="size-16 rounded-full bg-white/95 text-primary grid place-items-center font-display font-bold text-2xl shadow-soft">
-            V
-          </div>
+          {u.avatarUrl ? (
+            <img
+              src={u.avatarUrl}
+              alt={u.name}
+              referrerPolicy="no-referrer"
+              className="size-16 rounded-full object-cover ring-2 ring-white/70 shadow-soft"
+            />
+          ) : (
+            <div className="size-16 rounded-full bg-white/95 text-primary grid place-items-center font-display font-bold text-2xl shadow-soft">
+              {u.name.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div className="flex-1">
             <h2 className="font-display font-bold text-lg leading-tight">{u.name}</h2>
             <div className="flex items-center gap-1 text-xs opacity-90 mt-0.5">
