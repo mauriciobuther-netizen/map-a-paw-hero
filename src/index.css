@@ -2,87 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Patinhas — Design System
+   Premium, emocional, inspirado em Airbnb + apps de adoção animal.
+   Paleta laranja quente + off-white + bege.
+   All colors MUST be HSL.
 */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Surfaces */
+    --background: 36 33% 98%;          /* #FAF8F5 off-white */
+    --foreground: 0 0% 12%;            /* #1E1E1E */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 12%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Brand — laranja quente */
+    --primary: 28 91% 54%;             /* #F58A1F */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 22 100% 55%;       /* #FF7A1A */
+    --primary-soft: 28 95% 95%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Bege / quente */
+    --secondary: 32 33% 94%;           /* #F5EFE9 */
+    --secondary-foreground: 0 0% 12%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 33 22% 92%;               /* #ECE8E3 */
+    --muted-foreground: 0 0% 42%;      /* #6B6B6B */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 28 95% 95%;
+    --accent-foreground: 28 91% 40%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 78% 56%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --success: 142 55% 42%;
+    --success-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    --warning: 38 95% 55%;
+    --warning-foreground: 0 0% 12%;
+
+    --urgent: 0 78% 56%;
+    --urgent-foreground: 0 0% 100%;
+
+    --border: 33 20% 90%;
+    --input: 33 20% 90%;
+    --ring: 28 91% 54%;
+
+    --radius: 1.5rem;
+
+    /* Gradientes */
+    --gradient-primary: linear-gradient(135deg, hsl(28 91% 58%), hsl(22 100% 55%));
+    --gradient-warm: linear-gradient(180deg, hsl(36 33% 98%) 0%, hsl(32 33% 94%) 100%);
+    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(0 0% 0% / 0.65) 100%);
+
+    /* Sombras suaves */
+    --shadow-sm: 0 2px 8px -2px hsl(28 40% 30% / 0.08);
+    --shadow-md: 0 8px 24px -8px hsl(28 40% 30% / 0.12);
+    --shadow-lg: 0 20px 50px -20px hsl(28 40% 25% / 0.18);
+    --shadow-glow: 0 12px 40px -12px hsl(28 91% 54% / 0.45);
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --background: 24 15% 8%;
+    --foreground: 36 33% 96%;
+    --card: 24 12% 12%;
+    --card-foreground: 36 33% 96%;
+    --popover: 24 12% 12%;
+    --popover-foreground: 36 33% 96%;
+    --primary: 28 91% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 24 10% 16%;
+    --secondary-foreground: 36 33% 96%;
+    --muted: 24 8% 18%;
+    --muted-foreground: 33 10% 65%;
+    --accent: 24 12% 18%;
+    --accent-foreground: 28 91% 65%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 24 10% 20%;
+    --input: 24 10% 20%;
+    --ring: 28 91% 58%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +114,69 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  .gradient-primary { background: var(--gradient-primary); }
+  .gradient-warm { background: var(--gradient-warm); }
+  .shadow-soft { box-shadow: var(--shadow-md); }
+  .shadow-elegant { box-shadow: var(--shadow-lg); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .text-balance { text-wrap: balance; }
+
+  /* Esconde scrollbar mantendo scroll */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* Leaflet overrides — pins customizados */
+.leaflet-container {
+  font-family: 'Inter', sans-serif;
+  background: hsl(var(--secondary));
+}
+.leaflet-control-attribution {
+  font-size: 10px !important;
+  background: hsl(var(--background) / 0.8) !important;
+  border-radius: 8px !important;
+  padding: 2px 6px !important;
+}
+.custom-pin {
+  background: transparent !important;
+  border: none !important;
+}
+.pin-pulse {
+  animation: pulse-ring 2s ease-out infinite;
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 hsl(var(--urgent) / 0.55); }
+  70% { box-shadow: 0 0 0 18px hsl(var(--urgent) / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(var(--urgent) / 0); }
+}
+
+@keyframes float-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-float-up { animation: float-up 0.4s ease-out both; }
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in { animation: fade-in 0.3s ease-out both; }
+
+/* Mobile container — máx 480px centralizado para sensação mobile-first em desktop */
+.mobile-shell {
+  @apply mx-auto w-full max-w-[480px] min-h-screen bg-background relative;
+  box-shadow: 0 0 80px -20px hsl(0 0% 0% / 0.08);
   }
 }
