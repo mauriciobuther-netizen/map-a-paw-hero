@@ -1,0 +1,242 @@
+import { PetCase, Vet, HappyEnding, UserProfile } from "@/types/pet";
+import dog1 from "@/assets/pet-dog-1.jpg";
+import dog2 from "@/assets/pet-dog-2.jpg";
+import dog3 from "@/assets/pet-dog-3.jpg";
+import cat1 from "@/assets/pet-cat-1.jpg";
+import cat2 from "@/assets/pet-cat-2.jpg";
+import happyDog from "@/assets/happy-dog.jpg";
+import happyCat from "@/assets/happy-cat.jpg";
+
+// Teresina center: -5.0892, -42.8019
+export const TERESINA_CENTER: [number, number] = [-5.0892, -42.8019];
+
+export const mockPets: PetCase[] = [
+  {
+    id: "p1",
+    species: "dog",
+    status: "urgent",
+    photos: [dog1],
+    title: "Cão caramelo magro perto da feira",
+    description:
+      "Cão muito magro, parece estar há dias sem comer. Está calmo, deixou-me aproximar. Precisa urgentemente de comida e de uma avaliação veterinária.",
+    color: "Caramelo",
+    size: "medium",
+    sex: "male",
+    ageEstimate: "Adulto (~3 anos)",
+    behaviors: ["docile", "hungry"],
+    count: 1,
+    lat: -5.0855,
+    lng: -42.8125,
+    neighborhood: "Centro",
+    address: "Rua Álvaro Mendes, próximo à Feira do Centro",
+    reportedAt: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
+    reportedBy: { id: "u2", name: "Mariana S." },
+    helpers: 4,
+    distanceKm: 1.2,
+  },
+  {
+    id: "p2",
+    species: "cat",
+    status: "needs_help",
+    photos: [cat1],
+    title: "Gata tricolor escondida atrás do mercado",
+    description:
+      "Gata pequena, parece assustada. Está há dois dias no mesmo lugar. Não tem ferimentos visíveis mas está com medo.",
+    color: "Tricolor",
+    size: "small",
+    sex: "female",
+    behaviors: ["scared"],
+    count: 1,
+    lat: -5.0921,
+    lng: -42.8067,
+    neighborhood: "Fátima",
+    address: "Av. Higino Cunha",
+    reportedAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+    reportedBy: { id: "u3", name: "Lucas P." },
+    helpers: 2,
+    distanceKm: 2.5,
+  },
+  {
+    id: "p3",
+    species: "dog",
+    status: "injured",
+    photos: [dog2],
+    title: "Cão branco e marrom mancando",
+    description:
+      "Avistei este cão mancando da pata traseira esquerda. Parece dócil mas precisa de socorro veterinário urgente.",
+    color: "Branco com marrom",
+    size: "medium",
+    sex: "male",
+    behaviors: ["docile", "injured"],
+    count: 1,
+    lat: -5.0775,
+    lng: -42.7948,
+    neighborhood: "Jóquei",
+    address: "Av. Nossa Sra. de Fátima",
+    reportedAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
+    reportedBy: { id: "u4", name: "Carla M." },
+    helpers: 7,
+    distanceKm: 3.4,
+  },
+  {
+    id: "p4",
+    species: "cat",
+    status: "spotted",
+    photos: [cat2],
+    title: "Gatinho preto e branco numa caixa",
+    description:
+      "Filhote pequeno, parece abandonado dentro de uma caixa de papelão. Muito jovem, talvez 2 meses.",
+    color: "Preto e branco",
+    size: "small",
+    sex: "unknown",
+    ageEstimate: "Filhote",
+    behaviors: ["scared"],
+    count: 1,
+    lat: -5.0982,
+    lng: -42.7891,
+    neighborhood: "Horto",
+    address: "Rua Coelho Rodrigues",
+    reportedAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
+    reportedBy: { id: "u5", name: "Pedro R." },
+    helpers: 1,
+    distanceKm: 4.1,
+  },
+  {
+    id: "p5",
+    species: "dog",
+    status: "fed",
+    photos: [dog3],
+    title: "Cão dourado já alimentado, ainda no local",
+    description:
+      "Cão dócil, alimentado pela vizinhança hoje. Continua no local, ainda precisa de lar.",
+    color: "Dourado",
+    size: "medium",
+    sex: "male",
+    behaviors: ["docile"],
+    count: 1,
+    lat: -5.1012,
+    lng: -42.8155,
+    neighborhood: "Saci",
+    address: "Rua Areolino de Abreu",
+    reportedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+    reportedBy: { id: "u6", name: "Joana L." },
+    helpers: 12,
+    distanceKm: 5.2,
+  },
+  {
+    id: "p6",
+    species: "dog",
+    status: "rescued",
+    photos: [dog1],
+    title: "Resgatado da Av. Frei Serafim",
+    description: "Caso encerrado — animal resgatado por ONG parceira.",
+    color: "Caramelo",
+    size: "medium",
+    sex: "female",
+    behaviors: ["docile"],
+    count: 1,
+    lat: -5.0934,
+    lng: -42.8015,
+    neighborhood: "Centro",
+    address: "Av. Frei Serafim",
+    reportedAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
+    reportedBy: { id: "u7", name: "Rafael T." },
+    helpers: 18,
+    distanceKm: 1.9,
+  },
+];
+
+export const mockVets: Vet[] = [
+  {
+    id: "v1",
+    name: "Clínica Vet Amigo",
+    type: "clinic",
+    lat: -5.087,
+    lng: -42.8045,
+    address: "Av. Frei Serafim, 1234",
+    phone: "(86) 3221-0000",
+    hours: "Seg–Sáb · 08h–20h",
+  },
+  {
+    id: "v2",
+    name: "Hospital Veterinário Teresina",
+    type: "hospital",
+    lat: -5.0945,
+    lng: -42.8098,
+    address: "Av. João XXIII, 870",
+    phone: "(86) 3232-1010",
+    hours: "24 horas",
+  },
+  {
+    id: "v3",
+    name: "ONG Patas do Piauí",
+    type: "ngo",
+    lat: -5.1001,
+    lng: -42.7965,
+    address: "Rua David Caldas, 220",
+    phone: "(86) 99999-0000",
+    hours: "Seg–Sex · 09h–18h",
+  },
+];
+
+export const mockHappyEndings: HappyEnding[] = [
+  {
+    id: "h1",
+    petName: "Mel",
+    beforePhoto: dog2,
+    afterPhoto: happyDog,
+    rescuerName: "Carla M.",
+    action: "Adotou",
+    story:
+      "Encontrei a Mel mancando perto de casa. Levei ao veterinário, cuidei por duas semanas e hoje ela é parte da família.",
+    resolvedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(),
+  },
+  {
+    id: "h2",
+    petName: "Simba",
+    beforePhoto: cat2,
+    afterPhoto: happyCat,
+    rescuerName: "Joana L.",
+    action: "Resgatou e encaminhou",
+    story:
+      "O Simba foi encontrado dentro de uma caixa. Hoje vive feliz com a família que o adotou através da comunidade.",
+    resolvedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 14).toISOString(),
+  },
+  {
+    id: "h3",
+    petName: "Bento",
+    beforePhoto: dog3,
+    afterPhoto: happyDog,
+    rescuerName: "Rafael T.",
+    action: "Levou ao veterinário",
+    story:
+      "Avistei o Bento muito magro. Levei ao vet, tratei e encaminhei para a ONG. Já tem família nova.",
+    resolvedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(),
+  },
+];
+
+export const mockUser: UserProfile = {
+  id: "u1",
+  name: "Você",
+  city: "Teresina, PI",
+  level: 4,
+  points: 1240,
+  helped: 12,
+  reported: 7,
+  resolved: 3,
+  badges: [
+    { id: "b1", name: "Primeiro resgate", description: "Realizou seu primeiro resgate", icon: "🐾", earned: true },
+    { id: "b2", name: "5 animais ajudados", description: "Ajudou 5 animais", icon: "⭐", earned: true },
+    { id: "b3", name: "Herói local", description: "Top 10 da cidade", icon: "🏅", earned: true },
+    { id: "b4", name: "Guardião dos animais", description: "30 ações verificadas", icon: "🛡️", earned: false },
+    { id: "b5", name: "Resgatador ativo", description: "10 resgates concluídos", icon: "❤️", earned: false },
+  ],
+};
+
+export const ranking = [
+  { id: "r1", name: "Mariana S.", points: 3120, helped: 28 },
+  { id: "r2", name: "Carla M.", points: 2870, helped: 24 },
+  { id: "r3", name: "Rafael T.", points: 2540, helped: 21 },
+  { id: "u1", name: "Você", points: 1240, helped: 12 },
+  { id: "r5", name: "Pedro R.", points: 980, helped: 9 },
+];
