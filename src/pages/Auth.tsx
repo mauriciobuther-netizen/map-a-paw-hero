@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { PawPrint, Heart, MapPin } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export default function Auth() {
   const { user, loading, signInWithGoogle } = useAuth();
@@ -36,6 +37,11 @@ export default function Auth() {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur text-xs font-semibold mb-6">
             <PawPrint className="size-3.5" /> Teresina · Piauí
           </div>
+          <img
+            src={logo}
+            alt="Pata Amiga"
+            className="w-28 h-28 mb-4 drop-shadow-xl"
+          />
           <h1 className="font-display text-[36px] font-bold leading-[1.05] text-balance">
             Cada resgate começa
             <br /> com um clique.

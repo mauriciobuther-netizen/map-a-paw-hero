@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import slide1 from "@/assets/onboarding-1.jpg";
 import slide2 from "@/assets/onboarding-2.jpg";
 import slide3 from "@/assets/onboarding-3.jpg";
+import logo from "@/assets/logo.png";
 
 const slides = [
   {
@@ -46,6 +47,11 @@ export default function Onboarding() {
             className="size-full object-cover animate-fade-in"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+          <img
+            src={logo}
+            alt="Pata Amiga"
+            className="absolute top-5 left-5 w-14 h-14 drop-shadow-lg"
+          />
           <button
             onClick={() => navigate("/auth")}
             className="absolute top-5 right-5 text-sm text-white/90 bg-black/25 backdrop-blur px-4 py-1.5 rounded-full"
