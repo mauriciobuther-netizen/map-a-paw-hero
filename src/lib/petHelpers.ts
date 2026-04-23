@@ -28,7 +28,7 @@ export const statusClass: Record<CaseStatus, string> = {
 };
 
 export const speciesLabel: Record<Species, string> = {
-  dog: "Cão",
+  dog: "Cachorro",
   cat: "Gato",
 };
 

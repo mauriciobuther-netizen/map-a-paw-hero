@@ -51,8 +51,8 @@ export default function ProfileScreen() {
 
   const handleShare = async () => {
     const shareData = {
-      title: "PataAjuda · Teresina",
-      text: "Junta-te a mim para ajudar animais abandonados em Teresina 🐾",
+      title: "Pata Amiga · Teresina",
+      text: "Junte-se a mim para ajudar animais abandonados em Teresina 🐾",
       url: window.location.origin,
     };
     try {
@@ -60,17 +60,17 @@ export default function ProfileScreen() {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(shareData.url);
-        toast({ title: "Link copiado", description: "Partilha com a tua comunidade." });
+        toast({ title: "Link copiado", description: "Compartilhe com sua comunidade." });
       }
     } catch {
-      // utilizador cancelou
+      // usuário cancelou
     }
   };
 
   const handleLogout = async () => {
     await signOut();
     toast({
-      title: "Sessão terminada",
+      title: "Sessão encerrada",
       description: "Obrigado por ajudar 🐾",
     });
     setSettingsOpen(false);
@@ -268,7 +268,7 @@ function SettingsSheet({
         <SheetHeader className="px-5 pt-4 pb-2 text-left">
           <SheetTitle className="font-display text-xl">Configurações</SheetTitle>
           <SheetDescription>
-            Personaliza a tua experiência no app.
+            Personalize sua experiência no app.
           </SheetDescription>
         </SheetHeader>
 
@@ -317,7 +317,7 @@ function SettingsSheet({
           <SettingsGroup title="Privacidade">
             <SettingsToggle
               icon={<MapPin className="size-4" />}
-              label="Partilhar localização aproximada"
+              label="Compartilhar localização aproximada"
               hint="Ajuda a mostrar casos relevantes"
               checked={shareLocation}
               onChange={setShareLocation}
@@ -329,8 +329,8 @@ function SettingsSheet({
             />
             <SettingsRow
               icon={<UserCog className="size-4" />}
-              label="Gerir conta"
-              onClick={() => notify("Gerir conta")}
+              label="Gerenciar conta"
+              onClick={() => notify("Gerenciar conta")}
             />
           </SettingsGroup>
 
@@ -380,7 +380,7 @@ function SettingsSheet({
             onClick={onLogout}
             className="w-full flex items-center justify-center gap-2 rounded-2xl border border-destructive/30 bg-destructive/5 text-destructive font-semibold py-3 text-sm active:scale-[0.99] transition"
           >
-            <LogOut className="size-4" /> Terminar sessão
+            <LogOut className="size-4" /> Sair da conta
           </button>
 
           <p className="text-center text-[11px] text-muted-foreground">

@@ -66,7 +66,7 @@ export default function PetDetail() {
             </h1>
             <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="size-4" />
-              <span>{pet.neighborhood} · {pet.distanceKm} km de ti</span>
+            <span>{pet.neighborhood} · {pet.distanceKm} km de você</span>
               <span>·</span>
               <span>{timeAgo(pet.reportedAt)}</span>
             </div>
@@ -108,7 +108,7 @@ export default function PetDetail() {
             <div className="p-4 flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-sm font-semibold truncate">{pet.address}</div>
-                <div className="text-xs text-muted-foreground">Toca para abrir rota</div>
+                <div className="text-xs text-muted-foreground">Toque para abrir rota</div>
               </div>
               <Button size="sm" className="rounded-full gap-1.5">
                 <Navigation className="size-4" /> Rota
@@ -132,7 +132,7 @@ export default function PetDetail() {
           </div>
 
           <div>
-            <h2 className="font-display font-bold text-base mb-3 px-1">Como podes ajudar?</h2>
+            <h2 className="font-display font-bold text-base mb-3 px-1">Como você pode ajudar?</h2>
             <div className="grid grid-cols-2 gap-3">
               {[
                 { icon: HandHeart, label: "Quero ajudar" },
@@ -143,7 +143,7 @@ export default function PetDetail() {
               ].map(({ icon: Icon, label }) => (
                 <button
                   key={label}
-                  onClick={() => toast.success(`Obrigado! "${label}" registado.`, { description: "A comunidade agradece." })}
+                  onClick={() => toast.success(`Obrigado! "${label}" registrado.`, { description: "A comunidade agradece." })}
                   className="rounded-2xl bg-card border border-border p-4 text-left hover:border-primary hover:shadow-soft transition active:scale-95"
                 >
                   <Icon className="size-5 text-primary mb-2" />
@@ -151,7 +151,7 @@ export default function PetDetail() {
                 </button>
               ))}
               <button
-                onClick={() => toast("Atualização registada.")}
+                onClick={() => toast("Atualização registrada.")}
                 className="rounded-2xl gradient-primary text-primary-foreground p-4 text-left shadow-glow active:scale-95"
               >
                 <CheckCircle2 className="size-5 mb-2" />

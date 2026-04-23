@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 const filters = [
   { id: "all", label: "Todos" },
   { id: "urgent", label: "Urgente", icon: "🚨" },
-  { id: "dog", label: "Cães", icon: "🐶" },
+  { id: "dog", label: "Cachorros", icon: "🐶" },
   { id: "cat", label: "Gatos", icon: "🐱" },
   { id: "injured", label: "Feridos" },
   { id: "recent", label: "Recentes" },
@@ -71,7 +71,7 @@ export default function MapScreen() {
               <div className="flex-1 text-left">
                 <div className="text-sm font-semibold leading-tight">Teresina, PI</div>
                 <div className="text-[11px] text-muted-foreground leading-tight">
-                  {pets.length} casos ativos perto de ti
+                  {pets.length} casos ativos perto de você
                 </div>
               </div>
               <div className="size-9 rounded-full gradient-primary grid place-items-center text-primary-foreground">

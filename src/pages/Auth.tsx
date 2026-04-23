@@ -78,7 +78,7 @@ export default function Auth() {
             </span>
           </h1>
           <p className="mt-3 text-sm text-muted-foreground max-w-xs">
-            Junta-te à comunidade que resgata, alimenta e adota cães e gatos da nossa cidade.
+            Junte-se à comunidade que resgata, alimenta e adota cães e gatos da nossa cidade.
           </p>
 
           <div className="mt-5 flex items-center gap-2">
@@ -99,7 +99,7 @@ export default function Auth() {
         <div className="mx-auto h-1.5 w-12 rounded-full bg-muted mb-5" />
         <h2 className="font-display font-bold text-xl text-center">Entrar na conta</h2>
         <p className="text-center text-sm text-muted-foreground mt-1">
-          Continua com a tua conta Google em segundos.
+          Continue com sua conta Google em segundos.
         </p>
 
         <button
@@ -122,7 +122,7 @@ export default function Auth() {
         </div>
 
         <p className="mt-4 text-[11px] text-center text-muted-foreground leading-relaxed">
-          Ao continuar concordas com os <span className="underline">Termos</span> e a{" "}
+          Ao continuar você concorda com os <span className="underline">Termos</span> e a{" "}
           <span className="underline">Política de Privacidade</span>.
         </p>
       </section>

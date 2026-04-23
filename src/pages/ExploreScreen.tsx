@@ -7,7 +7,7 @@ import { Bell, Search, X } from "lucide-react";
 
 const cats = [
   { id: "all", label: "Todos" },
-  { id: "dog", label: "Cães", icon: "🐶" },
+  { id: "dog", label: "Cachorros", icon: "🐶" },
   { id: "cat", label: "Gatos", icon: "🐱" },
   { id: "urgent", label: "Urgente", icon: "🚨" },
   { id: "injured", label: "Feridos" },
@@ -56,7 +56,7 @@ export default function ExploreScreen() {
           </p>
           <h1 className="font-display text-[28px] font-bold leading-tight text-balance">
             Quem precisa
-            <br /> de ti hoje?
+            <br /> de você hoje?
           </h1>
         </div>
         <button className="size-11 rounded-full bg-card border border-border grid place-items-center shadow-soft relative">
@@ -92,7 +92,7 @@ export default function ExploreScreen() {
       <section className="mt-6">
         <div className="flex items-baseline justify-between mb-3">
           <h2 className="font-display font-bold text-lg">
-            {query ? `Resultados para "${query}"` : "Perto de ti"}
+            {query ? `Resultados para "${query}"` : "Perto de você"}
           </h2>
           <span className="text-xs text-muted-foreground">{list.length} casos</span>
         </div>
@@ -101,7 +101,7 @@ export default function ExploreScreen() {
             <div className="text-3xl mb-2">🔍</div>
             <p className="text-sm font-semibold">Nenhum caso encontrado</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Tenta outro bairro ou ajusta os filtros.
+              Tente outro bairro ou ajuste os filtros.
             </p>
           </div>
         ) : (
