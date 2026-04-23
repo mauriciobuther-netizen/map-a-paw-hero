@@ -52,14 +52,7 @@ export default function Auth() {
       </div>
 
       {/* Camada de leitura — gradiente para contraste do conteúdo */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to top, hsl(224 30% 52% / 0.55) 0%, hsl(224 30% 52% / 0.18) 45%, transparent 80%)",
-        }}
-      />
+      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-background/0 via-background/40 to-background" />
 
       {/* Hero */}
       <section className="relative flex-1 flex flex-col justify-end px-7 pt-14 pb-6">
@@ -96,7 +89,13 @@ export default function Auth() {
       </section>
 
       {/* Cartão de login */}
-      <section className="relative bg-card/95 backdrop-blur-xl rounded-t-[32px] p-6 pb-10 shadow-elegant border-t border-border">
+      <section
+        className="relative rounded-t-[32px] p-6 pb-10 shadow-elegant border-t border-border backdrop-blur-xl"
+        style={{
+          background:
+            "linear-gradient(to top, hsl(224 30% 52% / 0.85) 0%, hsl(224 30% 52% / 0.35) 40%, hsl(var(--card) / 0.95) 100%)",
+        }}
+      >
         <div className="mx-auto h-1.5 w-12 rounded-full bg-muted mb-5" />
         <h2 className="font-display font-bold text-xl text-center">Entrar na conta</h2>
         <p className="text-center text-sm text-muted-foreground mt-1">
