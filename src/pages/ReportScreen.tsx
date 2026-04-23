@@ -33,11 +33,11 @@ export default function ReportScreen() {
     if (!file) return;
 
     if (!user) {
-      toast.error("Inicia sessão para adicionar foto.");
+      toast.error("Faça login para adicionar foto.");
       return;
     }
     if (!file.type.startsWith("image/")) {
-      toast.error("Ficheiro inválido", { description: "Escolhe uma imagem." });
+      toast.error("Arquivo inválido", { description: "Escolha uma imagem." });
       return;
     }
     if (file.size > 8 * 1024 * 1024) {
@@ -60,7 +60,7 @@ export default function ReportScreen() {
       setPhotoPath(path);
       toast.success("Foto adicionada");
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Tenta novamente.";
+      const msg = err instanceof Error ? err.message : "Tente novamente.";
       toast.error("Falha no upload", { description: msg });
     } finally {
       setUploading(false);
@@ -77,11 +77,11 @@ export default function ReportScreen() {
 
   function publish() {
     if (!photoUrl) {
-      toast.error("Adiciona uma foto do animal");
+      toast.error("Adicione uma foto do animal");
       return;
     }
     if (!species) {
-      toast.error("Seleciona a espécie");
+      toast.error("Selecione a espécie");
       return;
     }
     toast.success("Caso publicado com sucesso!", {
@@ -94,10 +94,10 @@ export default function ReportScreen() {
     <MobileShell>
       <header>
         <p className="text-xs uppercase tracking-wider text-primary font-semibold">
-          Novo registo
+          Novo registro
         </p>
         <h1 className="font-display text-[28px] font-bold leading-tight text-balance mt-1">
-          Viste um animal
+          Viu um animal
           <br /> que precisa de ajuda?
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
@@ -147,10 +147,10 @@ export default function ReportScreen() {
                 )}
               </div>
               <span className="text-sm font-medium">
-                {uploading ? "A enviar foto..." : "Adicionar foto do animal"}
+                {uploading ? "Enviando foto..." : "Adicionar foto do animal"}
               </span>
               <span className="text-xs opacity-70">
-                {uploading ? "Aguarda um momento" : "Toca para tirar ou escolher"}
+                {uploading ? "Aguarde um momento" : "Toque para tirar ou escolher"}
               </span>
             </div>
           </button>
@@ -161,7 +161,7 @@ export default function ReportScreen() {
         <h2 className="font-semibold text-sm mb-3">Espécie</h2>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { id: "dog" as const, label: "Cão", Icon: Dog },
+            { id: "dog" as const, label: "Cachorro", Icon: Dog },
             { id: "cat" as const, label: "Gato", Icon: Cat },
           ].map(({ id, label, Icon }) => (
             <button

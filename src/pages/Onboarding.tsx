@@ -10,18 +10,18 @@ import logo from "@/assets/logo.png";
 const slides = [
   {
     img: slide1,
-    title: "Vê no mapa\nquem precisa de ti.",
-    text: "Cada ponto é um cão ou gato real à espera de uma mão amiga em Teresina.",
+    title: "Veja no mapa\nquem precisa de você.",
+    text: "Cada ponto é um cão ou gato real esperando por uma mão amiga em Teresina.",
   },
   {
     img: slide2,
-    title: "Regista em segundos.",
-    text: "Tira uma foto, descreve o que viste e ajuda toda a comunidade a agir rápido.",
+    title: "Cadastre em segundos.",
+    text: "Tire uma foto, descreva o que viu e ajude toda a comunidade a agir rápido.",
   },
   {
     img: slide3,
-    title: "Salvem vidas\njuntos.",
-    text: "Resgata, adota ou apoia. Cada pequena ação muda uma história.",
+    title: "Salve vidas\njuntos.",
+    text: "Resgate, adote ou apoie. Cada pequena ação muda uma história.",
   },
 ];
 
@@ -56,7 +56,7 @@ export default function Onboarding() {
             onClick={() => navigate("/auth")}
             className="absolute top-5 right-5 text-sm text-white/90 bg-black/25 backdrop-blur px-4 py-1.5 rounded-full"
           >
-            Saltar
+            Pular
           </button>
         </div>
 
