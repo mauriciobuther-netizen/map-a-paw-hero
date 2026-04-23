@@ -93,7 +93,7 @@ export default function Auth() {
         className="relative rounded-t-[32px] p-6 pb-10 shadow-elegant border-t border-border backdrop-blur-xl"
         style={{
           background:
-            "linear-gradient(to top, hsl(27 89% 60% / 0.85) 0%, hsl(27 89% 60% / 0.35) 40%, hsl(var(--card) / 0.95) 100%)",
+            "linear-gradient(to top, hsl(27 89% 60% / 0.7) 0%, hsl(27 89% 60% / 0.15) 18%, hsl(var(--card) / 0.95) 35%)",
         }}
       >
         <div className="mx-auto h-1.5 w-12 rounded-full bg-muted mb-5" />
