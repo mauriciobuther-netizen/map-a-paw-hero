@@ -52,7 +52,14 @@ export default function Auth() {
       </div>
 
       {/* Camada de leitura — gradiente para contraste do conteúdo */}
-      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-background/0 via-background/40 to-background" />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to top, hsl(224 30% 52% / 0.55) 0%, hsl(224 30% 52% / 0.18) 45%, transparent 80%)",
+        }}
+      />
 
       {/* Hero */}
       <section className="relative flex-1 flex flex-col justify-end px-7 pt-14 pb-6">
