@@ -11,6 +11,14 @@ type Profile = {
   city: string | null;
   bio: string | null;
   phone: string | null;
+  trust_score: number;
+  trust_level: string;
+  account_status: string;
+  reports_count: number;
+  validated_reports_count: number;
+  rejected_reports_count: number;
+  confirmed_help_count: number;
+  received_flags_count: number;
 };
 
 type AuthContextValue = {
