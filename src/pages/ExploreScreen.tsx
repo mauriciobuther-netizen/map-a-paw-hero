@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { FilterChips } from "@/components/FilterChips";
 import { PetCard } from "@/components/PetCard";
-import { mockPets } from "@/data/mockData";
+import { fetchActiveReports, rowToPetCase, type ReportRow } from "@/lib/reports";
+import type { PetCase } from "@/types/pet";
 import { Bell, Search, X } from "lucide-react";
+import { toast } from "sonner";
 
 const cats = [
   { id: "all", label: "Todos" },
@@ -17,6 +19,21 @@ const cats = [
 export default function ExploreScreen() {
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
+  const [rows, setRows] = useState<ReportRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    fetchActiveReports()
+      .then((d) => active && setRows(d))
+      .catch((e) => toast.error("Falha ao carregar casos", { description: e.message }))
+      .finally(() => active && setLoading(false));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const pets: PetCase[] = useMemo(() => rows.map(rowToPetCase), [rows]);
 
   const normalize = (s: string) =>
     s
@@ -28,7 +45,7 @@ export default function ExploreScreen() {
       .trim();
 
   const list = useMemo(() => {
-    let base = mockPets;
+    let base = pets;
     if (filter === "urgent")
       base = base.filter((p) => p.status === "urgent" || p.status === "injured");
     else if (filter === "dog") base = base.filter((p) => p.species === "dog");
@@ -45,7 +62,7 @@ export default function ExploreScreen() {
       );
       return terms.every((t) => haystack.includes(t));
     });
-  }, [filter, query]);
+  }, [filter, query, pets]);
 
   return (
     <MobileShell>
@@ -98,10 +115,12 @@ export default function ExploreScreen() {
         </div>
         {list.length === 0 ? (
           <div className="rounded-3xl bg-card border border-border p-8 text-center shadow-soft">
-            <div className="text-3xl mb-2">🔍</div>
-            <p className="text-sm font-semibold">Nenhum caso encontrado</p>
+            <div className="text-3xl mb-2">{loading ? "⏳" : "🔍"}</div>
+            <p className="text-sm font-semibold">
+              {loading ? "A carregar casos..." : "Nenhum caso encontrado"}
+            </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Tente outro bairro ou ajuste os filtros.
+              {loading ? "Aguarde um momento." : "Tente outro bairro ou seja a primeira pessoa a reportar um caso."}
             </p>
           </div>
         ) : (
