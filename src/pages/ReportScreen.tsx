@@ -1,20 +1,45 @@
 import { useRef, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
-import { Camera, MapPin, Dog, Cat, ChevronRight, X, Loader2 } from "lucide-react";
+import {
+  Camera, MapPin, Dog, Cat, X, Loader2, AlertTriangle, ShieldAlert, CheckCircle2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  findPossibleDuplicates,
+  getCurrentPosition,
+  RISK_TAG_LABELS,
+  type ReportRow,
+  type SpeciesType,
+  type UrgencyLevel,
+} from "@/lib/reports";
+
+const URGENCY_OPTIONS: { id: UrgencyLevel; label: string; tone: string }[] = [
+  { id: "low", label: "Baixa", tone: "border-border" },
+  { id: "medium", label: "Média", tone: "border-border" },
+  { id: "high", label: "Alta", tone: "border-warning/50 bg-warning/5" },
+  { id: "critical", label: "Crítica", tone: "border-urgent/50 bg-urgent/5 text-urgent" },
+];
+
+const RISK_TAGS = Object.keys(RISK_TAG_LABELS);
 
 export default function ReportScreen() {
-  const [species, setSpecies] = useState<"dog" | "cat" | null>(null);
+  const [species, setSpecies] = useState<SpeciesType | null>(null);
   const [behaviors, setBehaviors] = useState<string[]>([]);
   const [desc, setDesc] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoPath, setPhotoPath] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [urgency, setUrgency] = useState<UrgencyLevel>("medium");
+  const [riskTags, setRiskTags] = useState<string[]>([]);
+  const [coords, setCoords] = useState<{ lat: number; lng: number; acc?: number } | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [duplicates, setDuplicates] = useState<ReportRow[] | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -25,6 +50,28 @@ export default function ReportScreen() {
     setBehaviors((prev) =>
       prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b],
     );
+  }
+
+  function toggleRisk(t: string) {
+    setRiskTags((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
+  }
+
+  async function captureLocation() {
+    setLocating(true);
+    try {
+      const pos = await getCurrentPosition();
+      setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude, acc: pos.coords.accuracy });
+      toast.success("Localização capturada", {
+        description: `Precisão estimada: ${Math.round(pos.coords.accuracy)} m`,
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Não foi possível obter a localização.";
+      toast.error("Localização indisponível", {
+        description: `${msg}. A criação exige GPS para evitar reports falsos.`,
+      });
+    } finally {
+      setLocating(false);
+    }
   }
 
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -75,7 +122,11 @@ export default function ReportScreen() {
     setPhotoPath(null);
   }
 
-  function publish() {
+  async function attemptPublish() {
+    if (!user) {
+      toast.error("Faça login para publicar.");
+      return;
+    }
     if (!photoUrl) {
       toast.error("Adicione uma foto do animal");
       return;
@@ -84,10 +135,74 @@ export default function ReportScreen() {
       toast.error("Selecione a espécie");
       return;
     }
-    toast.success("Caso publicado com sucesso!", {
-      description: "A comunidade já pode ajudar este animal.",
-    });
-    navigate("/app/map");
+    if (!coords) {
+      toast.error("Capture a localização", {
+        description: "Por segurança, casos sem GPS não podem ser publicados.",
+      });
+      return;
+    }
+    if (desc.trim().length < 10) {
+      toast.error("Descreva o animal", {
+        description: "Mínimo de 10 caracteres para ajudar a comunidade.",
+      });
+      return;
+    }
+
+    // Duplicate detection: same species, < 200m, < 48h
+    try {
+      const dups = await findPossibleDuplicates({
+        species,
+        lat: coords.lat,
+        lng: coords.lng,
+      });
+      if (dups.length > 0) {
+        setDuplicates(dups);
+        return;
+      }
+    } catch {
+      // non-fatal; continue
+    }
+    await doPublish();
+  }
+
+  async function doPublish() {
+    if (!user || !species || !coords || !photoUrl) return;
+    setPublishing(true);
+    try {
+      const title =
+        desc.trim().split(/\.|\n/)[0].slice(0, 80) ||
+        `${species === "dog" ? "Cachorro" : "Gato"} avistado`;
+      const { data, error } = await supabase
+        .from("animal_reports")
+        .insert({
+          created_by: user.id,
+          species,
+          title,
+          description: desc.trim(),
+          urgency,
+          risk_tags: riskTags,
+          behavior_tags: behaviors,
+          latitude: coords.lat,
+          longitude: coords.lng,
+          gps_accuracy: coords.acc ?? null,
+          main_image_url: photoUrl,
+          image_metadata: { source: "user_camera", captured_at: new Date().toISOString() },
+          city: "Teresina",
+        })
+        .select("id")
+        .single();
+      if (error) throw error;
+      toast.success("Caso publicado com sucesso!", {
+        description: "A comunidade pode validar e ajudar.",
+      });
+      navigate(`/pet/${data.id}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Tente novamente.";
+      toast.error("Falha ao publicar", { description: msg });
+    } finally {
+      setPublishing(false);
+      setDuplicates(null);
+    }
   }
 
   return (
@@ -101,9 +216,18 @@ export default function ReportScreen() {
           <br /> que precisa de ajuda?
         </h1>
         <p className="text-sm text-muted-foreground mt-2">
-          Em poucos passos, a comunidade pode agir.
+          Em poucos passos, a comunidade pode validar e agir com segurança.
         </p>
       </header>
+
+      <div className="mt-4 rounded-2xl bg-warning/10 border border-warning/20 p-3 flex gap-2 items-start text-xs text-warning-foreground">
+        <AlertTriangle className="size-4 shrink-0 mt-0.5" />
+        <p className="leading-relaxed">
+          Reporte apenas o que <strong>você viu pessoalmente</strong>. Fotos
+          devem ser do momento atual. Casos falsos prejudicam quem realmente
+          precisa de ajuda.
+        </p>
+      </div>
 
       <section className="mt-6">
         <input
@@ -216,27 +340,140 @@ export default function ReportScreen() {
       </section>
 
       <section className="mt-6">
-        <button className="w-full rounded-2xl bg-card border border-border p-4 flex items-center gap-3 shadow-soft">
-          <div className="size-10 rounded-xl bg-primary-soft text-primary grid place-items-center">
-            <MapPin className="size-5" />
+        <h2 className="font-semibold text-sm mb-3">Nível de urgência</h2>
+        <div className="grid grid-cols-4 gap-2">
+          {URGENCY_OPTIONS.map((u) => (
+            <button
+              key={u.id}
+              onClick={() => setUrgency(u.id)}
+              className={cn(
+                "rounded-xl border-2 py-2 text-xs font-semibold transition",
+                u.tone,
+                urgency === u.id ? "border-primary bg-primary-soft text-primary" : "",
+              )}
+            >
+              {u.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-6">
+        <h2 className="font-semibold text-sm mb-1 flex items-center gap-1.5">
+          <ShieldAlert className="size-4 text-urgent" /> Sinalizar riscos no local
+        </h2>
+        <p className="text-xs text-muted-foreground mb-3">
+          Avise quem for ajudar sobre condições de perigo.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {RISK_TAGS.map((t) => {
+            const active = riskTags.includes(t);
+            return (
+              <button
+                key={t}
+                onClick={() => toggleRisk(t)}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-xs font-medium border transition",
+                  active
+                    ? "bg-urgent/15 text-urgent border-urgent/40"
+                    : "bg-card text-foreground border-border",
+                )}
+              >
+                {RISK_TAG_LABELS[t]}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mt-6">
+        <button
+          onClick={captureLocation}
+          disabled={locating}
+          className="w-full rounded-2xl bg-card border border-border p-4 flex items-center gap-3 shadow-soft disabled:opacity-70"
+        >
+          <div
+            className={cn(
+              "size-10 rounded-xl grid place-items-center",
+              coords ? "bg-success/15 text-success" : "bg-primary-soft text-primary",
+            )}
+          >
+            {locating ? (
+              <Loader2 className="size-5 animate-spin" />
+            ) : coords ? (
+              <CheckCircle2 className="size-5" />
+            ) : (
+              <MapPin className="size-5" />
+            )}
           </div>
           <div className="flex-1 text-left">
-            <div className="text-sm font-semibold">Localização atual</div>
-            <div className="text-xs text-muted-foreground">Centro, Teresina · ajustar no mapa</div>
+            <div className="text-sm font-semibold">
+              {coords ? "Localização capturada" : "Capturar localização (obrigatório)"}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {coords
+                ? `±${Math.round(coords.acc ?? 0)} m · ${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`
+                : "Toque para usar GPS · sem GPS o caso não pode ser publicado"}
+            </div>
           </div>
-          <ChevronRight className="size-5 text-muted-foreground" />
         </button>
       </section>
 
       <Button
-        onClick={publish}
+        onClick={attemptPublish}
+        disabled={publishing}
         className="w-full h-14 mt-8 rounded-full text-base font-semibold gradient-primary text-primary-foreground shadow-glow"
       >
-        Publicar caso
+        {publishing ? "A publicar..." : "Publicar caso"}
       </Button>
-      <p className="text-center text-[11px] text-muted-foreground mt-3 mb-2">
-        Cada ponto no mapa pode mudar uma vida.
+      <p className="text-center text-[11px] text-muted-foreground mt-3 mb-2 px-4">
+        Ao publicar, declaro que vi este animal pessoalmente e aceito a
+        responsabilidade pela informação prestada. Esta é uma plataforma
+        colaborativa, não um serviço oficial de resgate.
       </p>
+
+      {duplicates && duplicates.length > 0 && (
+        <div className="fixed inset-0 z-[2000] grid place-items-center bg-background/80 backdrop-blur-sm p-5">
+          <div className="w-full max-w-md rounded-3xl bg-card border border-border shadow-elegant p-5">
+            <div className="size-11 rounded-full bg-warning/15 text-warning-foreground grid place-items-center">
+              <AlertTriangle className="size-5" />
+            </div>
+            <h3 className="font-display font-bold text-lg mt-3">
+              Este caso pode já existir
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Encontramos {duplicates.length} caso{duplicates.length > 1 ? "s" : ""}
+              {" "}similares perto da sua localização nas últimas 48h.
+              Ajude a comunidade evitando duplicados.
+            </p>
+            <div className="mt-4 max-h-56 overflow-y-auto space-y-2">
+              {duplicates.map((d) => (
+                <button
+                  key={d.id}
+                  onClick={() => navigate(`/pet/${d.id}`)}
+                  className="w-full text-left rounded-xl border border-border p-3 hover:border-primary transition flex gap-3"
+                >
+                  <img src={d.main_image_url} alt="" className="size-14 rounded-lg object-cover" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold truncate">{d.title}</div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {d.location_text || d.city || "Local próximo"}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <Button variant="outline" onClick={() => setDuplicates(null)}>
+                Voltar
+              </Button>
+              <Button onClick={doPublish} disabled={publishing}>
+                {publishing ? "A publicar..." : "Publicar mesmo assim"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </MobileShell>
   );
 }
