@@ -1,11 +1,14 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { PetMap } from "@/components/PetMap";
 import { FilterChips } from "@/components/FilterChips";
-import { mockPets, mockVets } from "@/data/mockData";
+import { mockVets } from "@/data/mockData";
 import { PetCard } from "@/components/PetCard";
 import { Search, LocateFixed, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
+import { fetchActiveReports, rowToPetCase, type ReportRow } from "@/lib/reports";
+import { toast } from "sonner";
+import type { PetCase } from "@/types/pet";
 
 const filters = [
   { id: "all", label: "Todos" },
@@ -20,29 +23,44 @@ const filters = [
 export default function MapScreen() {
   const [filter, setFilter] = useState("all");
   const [selected, setSelected] = useState<string | undefined>();
+  const [rows, setRows] = useState<ReportRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    fetchActiveReports()
+      .then((d) => active && setRows(d))
+      .catch((e) => toast.error("Falha ao carregar casos", { description: e.message }))
+      .finally(() => active && setLoading(false));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const allPets: PetCase[] = useMemo(() => rows.map(rowToPetCase), [rows]);
 
   const pets = useMemo(() => {
     switch (filter) {
       case "urgent":
-        return mockPets.filter((p) => p.status === "urgent" || p.status === "injured");
+        return allPets.filter((p) => p.status === "urgent" || p.status === "injured");
       case "dog":
-        return mockPets.filter((p) => p.species === "dog");
+        return allPets.filter((p) => p.species === "dog");
       case "cat":
-        return mockPets.filter((p) => p.species === "cat");
+        return allPets.filter((p) => p.species === "cat");
       case "injured":
-        return mockPets.filter((p) => p.status === "injured");
+        return allPets.filter((p) => p.status === "injured");
       case "recent":
-        return [...mockPets].sort(
+        return [...allPets].sort(
           (a, b) => +new Date(b.reportedAt) - +new Date(a.reportedAt),
         );
       case "resolved":
-        return mockPets.filter(
+        return allPets.filter(
           (p) => p.status === "rescued" || p.status === "adopted" || p.status === "closed",
         );
       default:
-        return mockPets;
+        return allPets;
     }
-  }, [filter]);
+  }, [filter, allPets]);
 
   const selectedPet = pets.find((p) => p.id === selected);
 
@@ -71,7 +89,7 @@ export default function MapScreen() {
               <div className="flex-1 text-left">
                 <div className="text-sm font-semibold leading-tight">Teresina, PI</div>
                 <div className="text-[11px] text-muted-foreground leading-tight">
-                  {pets.length} casos ativos perto de você
+                  {loading ? "A carregar casos..." : `${pets.length} casos ativos perto de você`}
                 </div>
               </div>
               <div className="size-9 rounded-full gradient-primary grid place-items-center text-primary-foreground">
