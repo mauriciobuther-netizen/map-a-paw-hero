@@ -8,6 +8,34 @@ export type ValidationStatus = Database["public"]["Enums"]["validation_status"];
 export type SpeciesType = Database["public"]["Enums"]["species_type"];
 export type UrgencyLevel = Database["public"]["Enums"]["urgency_level"];
 
+import type { PetCase } from "@/types/pet";
+
+/** Adapt a DB report row to the legacy PetCase shape used by UI components. */
+export function rowToPetCase(r: ReportRow): PetCase {
+  const status: PetCase["status"] =
+    r.urgency === "critical" || r.urgency === "high" ? "urgent" : "needs_help";
+  return {
+    id: r.id,
+    species: r.species as PetCase["species"],
+    status,
+    photos: [r.main_image_url],
+    title: r.title,
+    description: r.description,
+    color: r.color_description ?? "—",
+    size: (r.size_category as PetCase["size"]) ?? "medium",
+    sex: "unknown",
+    behaviors: (r.behavior_tags as PetCase["behaviors"]) ?? [],
+    count: 1,
+    lat: r.latitude,
+    lng: r.longitude,
+    neighborhood: r.location_text ?? r.city ?? "—",
+    address: r.location_text ?? "",
+    reportedAt: r.reported_at,
+    reportedBy: { id: r.created_by ?? "anon", name: "Voluntário" },
+    helpers: 0,
+  };
+}
+
 export const RISK_TAG_LABELS: Record<string, string> = {
   dangerous_area: "Zona perigosa",
   aggressive_animal: "Animal agressivo",
