@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Onboarding from "./pages/Onboarding.tsx";
 import Auth from "./pages/Auth.tsx";
+import AcceptTerms from "./pages/AcceptTerms.tsx";
 import MapScreen from "./pages/MapScreen.tsx";
 import ExploreScreen from "./pages/ExploreScreen.tsx";
 import PetDetail from "./pages/PetDetail.tsx";
@@ -27,6 +28,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Onboarding />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/accept-terms" element={<ProtectedRoute><AcceptTerms /></ProtectedRoute>} />
             <Route path="/app/map" element={<ProtectedRoute><MapScreen /></ProtectedRoute>} />
             <Route path="/app/explore" element={<ProtectedRoute><ExploreScreen /></ProtectedRoute>} />
             <Route path="/app/report" element={<ProtectedRoute><ReportScreen /></ProtectedRoute>} />
