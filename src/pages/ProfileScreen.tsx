@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
+import { EditProfileDialog } from "@/components/EditProfileDialog";
 
 export default function ProfileScreen() {
   const { profile, user, signOut } = useAuth();
@@ -43,6 +44,7 @@ export default function ProfileScreen() {
     avatarUrl: profile?.avatar_url ?? null,
   };
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [notifUrgent, setNotifUrgent] = useState(true);
   const [notifNearby, setNotifNearby] = useState(true);
   const [notifUpdates, setNotifUpdates] = useState(false);
@@ -203,6 +205,10 @@ export default function ProfileScreen() {
         open={settingsOpen}
         onOpenChange={setSettingsOpen}
         user={u}
+        onEdit={() => {
+          setSettingsOpen(false);
+          setEditOpen(true);
+        }}
         notifUrgent={notifUrgent}
         setNotifUrgent={setNotifUrgent}
         notifNearby={notifNearby}
@@ -216,6 +222,7 @@ export default function ProfileScreen() {
         onShare={handleShare}
         onLogout={handleLogout}
       />
+      <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} />
     </MobileShell>
   );
 }
@@ -224,6 +231,7 @@ type SettingsSheetProps = {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   user: typeof mockUser;
+  onEdit: () => void;
   notifUrgent: boolean;
   setNotifUrgent: (v: boolean) => void;
   notifNearby: boolean;
@@ -242,6 +250,7 @@ function SettingsSheet({
   open,
   onOpenChange,
   user,
+  onEdit,
   notifUrgent,
   setNotifUrgent,
   notifNearby,
@@ -285,7 +294,7 @@ function SettingsSheet({
               </div>
             </div>
             <button
-              onClick={() => notify("Editar perfil")}
+              onClick={onEdit}
               className="text-xs font-semibold text-primary px-3 py-1.5 rounded-full bg-primary-soft"
             >
               Editar
