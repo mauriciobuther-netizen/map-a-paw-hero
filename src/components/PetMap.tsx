@@ -11,6 +11,7 @@ interface Props {
   selectedId?: string;
   onSelect?: (id: string) => void;
   showVets?: boolean;
+  center?: { lat: number; lng: number };
   className?: string;
 }
 
@@ -67,6 +68,7 @@ export function PetMap({
   selectedId,
   onSelect,
   showVets = true,
+  center: centerProp,
   className,
 }: Props) {
   const center = useMemo<[number, number]>(() => TERESINA_CENTER, []);
@@ -128,9 +130,14 @@ export function PetMap({
       });
     }
 
-    map.setView(center, map.getZoom(), { animate: false });
     requestAnimationFrame(() => map.invalidateSize());
-  }, [pets, vets, selectedId, onSelect, showVets, center]);
+  }, [pets, vets, selectedId, onSelect, showVets]);
+
+  // Re-center on user position when provided
+  useEffect(() => {
+    if (!mapRef.current || !centerProp) return;
+    mapRef.current.flyTo([centerProp.lat, centerProp.lng], 15, { duration: 0.8 });
+  }, [centerProp]);
 
   return (
     <div className={className}>

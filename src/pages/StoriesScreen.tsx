@@ -1,8 +1,18 @@
 import { MobileShell } from "@/components/MobileShell";
 import { mockHappyEndings } from "@/data/mockData";
 import { Heart, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function StoriesScreen() {
+  const [liked, setLiked] = useState<Record<string, boolean>>({});
+  const toggleLike = (id: string) => {
+    setLiked((p) => {
+      const next = { ...p, [id]: !p[id] };
+      toast.success(next[id] ? "Você curtiu esta história ❤️" : "Curtida removida");
+      return next;
+    });
+  };
   return (
     <MobileShell>
       <header>
@@ -53,8 +63,12 @@ export default function StoriesScreen() {
                   <div className="text-sm font-semibold leading-tight">{h.rescuerName}</div>
                   <div className="text-[11px] text-muted-foreground">{h.action} · {h.petName}</div>
                 </div>
-                <button className="size-9 rounded-full bg-primary-soft text-primary grid place-items-center">
-                  <Heart className="size-4" />
+                <button
+                  onClick={() => toggleLike(h.id)}
+                  aria-label="Curtir história"
+                  className="size-9 rounded-full bg-primary-soft text-primary grid place-items-center active:scale-95 transition"
+                >
+                  <Heart className={`size-4 ${liked[h.id] ? "fill-primary" : ""}`} />
                 </button>
               </div>
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">

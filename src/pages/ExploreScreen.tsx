@@ -76,7 +76,15 @@ export default function ExploreScreen() {
             <br /> de você hoje?
           </h1>
         </div>
-        <button className="size-11 rounded-full bg-card border border-border grid place-items-center shadow-soft relative">
+        <button
+          onClick={() =>
+            toast.message("Notificações", {
+              description: "Em breve você verá aqui alertas de casos urgentes perto de si.",
+            })
+          }
+          aria-label="Notificações"
+          className="size-11 rounded-full bg-card border border-border grid place-items-center shadow-soft relative active:scale-95 transition"
+        >
           <Bell className="size-5" />
           <span className="absolute top-2 right-2.5 size-2 rounded-full bg-urgent" />
         </button>
