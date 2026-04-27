@@ -3,6 +3,8 @@ import { RescueStatusBadge } from "./RescueStatusBadge";
 import { speciesLabel, timeAgo } from "@/lib/petHelpers";
 import { MapPin, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   pet: PetCase;
@@ -10,6 +12,15 @@ interface Props {
 }
 
 export function PetCard({ pet, variant = "full" }: Props) {
+  const [saved, setSaved] = useState(false);
+
+  const toggleSave = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSaved((v) => !v);
+    toast.success(saved ? "Removido dos favoritos" : "Salvo nos favoritos");
+  };
+
   if (variant === "compact") {
     return (
       <Link
@@ -54,11 +65,11 @@ export function PetCard({ pet, variant = "full" }: Props) {
           <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
             <RescueStatusBadge status={pet.status} />
             <button
-              onClick={(e) => e.preventDefault()}
+              onClick={toggleSave}
               aria-label="Salvar"
               className="size-9 rounded-full bg-background/85 backdrop-blur grid place-items-center text-foreground hover:bg-background transition"
             >
-              <Heart className="size-4" />
+              <Heart className={`size-4 ${saved ? "fill-primary text-primary" : ""}`} />
             </button>
           </div>
           <div className="absolute bottom-0 left-0 right-0 p-4 text-white">

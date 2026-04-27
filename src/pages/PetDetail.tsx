@@ -35,6 +35,7 @@ export default function PetDetail() {
   const [counts, setCounts] = useState<Record<ValidationAction, number> | null>(null);
   const [busy, setBusy] = useState<ValidationAction | null>(null);
   const [safetyOpen, setSafetyOpen] = useState(false);
+  const [favorited, setFavorited] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -153,11 +154,31 @@ export default function PetDetail() {
               <ArrowLeft className="size-5" />
             </button>
             <div className="flex gap-2">
-              <button className="size-11 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft">
+              <button
+                onClick={async () => {
+                  const data = { title: pet.title, text: `Ajude este caso na Pata Amiga: ${pet.title}`, url: window.location.href };
+                  try {
+                    if (navigator.share) await navigator.share(data);
+                    else {
+                      await navigator.clipboard.writeText(data.url);
+                      toast.success("Link copiado", { description: "Compartilhe com sua rede." });
+                    }
+                  } catch {/* cancelado */}
+                }}
+                aria-label="Compartilhar"
+                className="size-11 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft active:scale-95 transition"
+              >
                 <Share2 className="size-5" />
               </button>
-              <button className="size-11 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft">
-                <Heart className="size-5" />
+              <button
+                onClick={() => {
+                  setFavorited((v) => !v);
+                  toast.success(favorited ? "Removido dos favoritos" : "Adicionado aos favoritos");
+                }}
+                aria-label="Favoritar"
+                className="size-11 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft active:scale-95 transition"
+              >
+                <Heart className={`size-5 ${favorited ? "fill-primary text-primary" : ""}`} />
               </button>
             </div>
           </div>
@@ -267,19 +288,22 @@ export default function PetDetail() {
             <div className="h-44">
               <PetMap pets={[pet]} vets={mockVets} className="size-full" showVets />
             </div>
-            <div className="p-4 flex items-center justify-between gap-3">
+            <button
+              onClick={() => setSafetyOpen(true)}
+              className="w-full p-4 flex items-center justify-between gap-3 text-left hover:bg-muted/40 transition"
+            >
               <div className="min-w-0">
                 <div className="text-sm font-semibold truncate">{pet.address}</div>
                 <div className="text-xs text-muted-foreground">Toque para abrir rota</div>
               </div>
               <Button
+                asChild
                 size="sm"
                 className="rounded-full gap-1.5"
-                onClick={() => setSafetyOpen(true)}
               >
-                <Navigation className="size-4" /> Rota
+                <span><Navigation className="size-4" /> Rota</span>
               </Button>
-            </div>
+            </button>
           </div>
 
           <div className="rounded-3xl bg-card p-5 shadow-soft border border-border/60">
