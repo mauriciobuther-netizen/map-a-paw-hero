@@ -6,7 +6,7 @@ import { mockVets } from "@/data/mockData";
 import { PetCard } from "@/components/PetCard";
 import { Search, LocateFixed, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
-import { fetchActiveReports, rowToPetCase, type ReportRow } from "@/lib/reports";
+import { fetchActiveReports, rowToPetCase, getCurrentPosition, type ReportRow } from "@/lib/reports";
 import { toast } from "sonner";
 import type { PetCase } from "@/types/pet";
 
@@ -25,6 +25,8 @@ export default function MapScreen() {
   const [selected, setSelected] = useState<string | undefined>();
   const [rows, setRows] = useState<ReportRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [locating, setLocating] = useState(false);
+  const [userPos, setUserPos] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -64,6 +66,22 @@ export default function MapScreen() {
 
   const selectedPet = pets.find((p) => p.id === selected);
 
+  async function centerOnMe() {
+    setLocating(true);
+    try {
+      const pos = await getCurrentPosition();
+      setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      toast.success("Localização atualizada", {
+        description: "Centramos o mapa na sua posição.",
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Não foi possível obter a localização.";
+      toast.error("Localização indisponível", { description: msg });
+    } finally {
+      setLocating(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-secondary/40">
       <div className="mobile-shell relative overflow-hidden isolate">
@@ -74,6 +92,7 @@ export default function MapScreen() {
             vets={mockVets}
             selectedId={selected}
             onSelect={setSelected}
+            center={userPos ?? undefined}
             className="size-full"
           />
         </div>
@@ -105,10 +124,12 @@ export default function MapScreen() {
 
         {/* Botão localizar */}
         <button
+          onClick={centerOnMe}
+          disabled={locating}
           aria-label="Centralizar"
-          className="absolute right-5 bottom-44 z-[1000] size-12 rounded-full bg-card shadow-elegant grid place-items-center border border-border/60"
+          className="absolute right-5 bottom-44 z-[1000] size-12 rounded-full bg-card shadow-elegant grid place-items-center border border-border/60 active:scale-95 transition disabled:opacity-60"
         >
-          <LocateFixed className="size-5 text-foreground" />
+          <LocateFixed className={`size-5 text-foreground ${locating ? "animate-pulse" : ""}`} />
         </button>
 
         {/* Card flutuante do pin selecionado */}
