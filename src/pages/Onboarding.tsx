@@ -61,16 +61,39 @@ export default function Onboarding() {
         </div>
 
         <div className="flex-1 px-7 -mt-6 relative z-10 flex flex-col">
-          <div className="flex gap-1.5 mb-5">
-            {slides.map((_, i) => (
-              <span
-                key={i}
-                className={cn(
-                  "h-1.5 rounded-full transition-all",
-                  i === step ? "w-8 bg-primary" : "w-2 bg-muted",
-                )}
-              />
-            ))}
+          <div className="flex items-center gap-2 mb-5">
+            <button
+              type="button"
+              onClick={() => setStep((s) => Math.max(0, s - 1))}
+              disabled={step === 0}
+              aria-label="Slide anterior"
+              className="text-xs text-muted-foreground disabled:opacity-30 hover:text-foreground transition px-2 py-1"
+            >
+              ‹
+            </button>
+            <div className="flex gap-1.5">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setStep(i)}
+                  aria-label={`Ir para slide ${i + 1}`}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all cursor-pointer",
+                    i === step ? "w-8 bg-primary" : "w-2 bg-muted hover:bg-muted-foreground/40",
+                  )}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setStep((s) => Math.min(slides.length - 1, s + 1))}
+              disabled={last}
+              aria-label="Próximo slide"
+              className="text-xs text-muted-foreground disabled:opacity-30 hover:text-foreground transition px-2 py-1"
+            >
+              ›
+            </button>
           </div>
 
           <h1 className="font-display text-[34px] leading-[1.05] font-bold text-foreground whitespace-pre-line text-balance animate-float-up">
