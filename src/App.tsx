@@ -14,6 +14,7 @@ import PetDetail from "./pages/PetDetail.tsx";
 import ReportScreen from "./pages/ReportScreen.tsx";
 import StoriesScreen from "./pages/StoriesScreen.tsx";
 import ProfileScreen from "./pages/ProfileScreen.tsx";
+import MyReports from "./pages/MyReports.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/app/report" element={<ProtectedRoute><ReportScreen /></ProtectedRoute>} />
             <Route path="/app/stories" element={<ProtectedRoute><StoriesScreen /></ProtectedRoute>} />
             <Route path="/app/profile" element={<ProtectedRoute><ProfileScreen /></ProtectedRoute>} />
+            <Route path="/app/my-reports" element={<ProtectedRoute><MyReports /></ProtectedRoute>} />
             <Route path="/pet/:id" element={<ProtectedRoute><PetDetail /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
