@@ -21,6 +21,7 @@ import {
   ChevronRight,
   UserCog,
   MapPinned,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -131,6 +132,24 @@ export default function ProfileScreen() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="mt-5">
+        <button
+          onClick={() => navigate("/app/my-reports")}
+          className="w-full rounded-2xl bg-card border border-border shadow-soft p-4 flex items-center gap-3 hover:bg-muted/40 active:scale-[0.99] transition"
+        >
+          <div className="size-11 rounded-xl bg-primary-soft text-primary grid place-items-center">
+            <FileText className="size-5" />
+          </div>
+          <div className="flex-1 text-left">
+            <div className="text-sm font-semibold">Minhas postagens</div>
+            <div className="text-xs text-muted-foreground">
+              Ver, editar ou apagar animais que você reportou
+            </div>
+          </div>
+          <ChevronRight className="size-4 text-muted-foreground" />
+        </button>
       </section>
 
       <section className="mt-7">
