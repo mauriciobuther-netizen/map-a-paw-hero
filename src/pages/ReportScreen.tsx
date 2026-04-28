@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import {
-  Camera, MapPin, Dog, Cat, X, Loader2, AlertTriangle, ShieldAlert, CheckCircle2,
+  Camera, MapPin, X, Loader2, AlertTriangle, ShieldAlert, CheckCircle2,
 } from "lucide-react";
+import { DogIcon, CatIcon } from "@/components/icons/AnimalIcons";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -285,8 +286,8 @@ export default function ReportScreen() {
         <h2 className="font-semibold text-sm mb-3">Espécie</h2>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { id: "dog" as const, label: "Cachorro", Icon: Dog },
-            { id: "cat" as const, label: "Gato", Icon: Cat },
+            { id: "dog" as const, label: "Cachorro", Icon: DogIcon },
+            { id: "cat" as const, label: "Gato", Icon: CatIcon },
           ].map(({ id, label, Icon }) => (
             <button
               key={id}

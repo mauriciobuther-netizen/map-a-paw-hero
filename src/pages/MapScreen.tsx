@@ -6,6 +6,7 @@ import { mockVets } from "@/data/mockData";
 import { PetCard } from "@/components/PetCard";
 import { Search, LocateFixed, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
+import { DogIcon, CatIcon } from "@/components/icons/AnimalIcons";
 import { fetchActiveReports, rowToPetCase, getCurrentPosition, type ReportRow } from "@/lib/reports";
 import { toast } from "sonner";
 import type { PetCase } from "@/types/pet";
@@ -13,8 +14,8 @@ import type { PetCase } from "@/types/pet";
 const filters = [
   { id: "all", label: "Todos" },
   { id: "urgent", label: "Urgente", icon: "🚨" },
-  { id: "dog", label: "Cachorros", icon: "🐶" },
-  { id: "cat", label: "Gatos", icon: "🐱" },
+  { id: "dog", label: "Cachorros", iconNode: <DogIcon size={16} /> },
+  { id: "cat", label: "Gatos", iconNode: <CatIcon size={16} /> },
   { id: "injured", label: "Feridos" },
   { id: "recent", label: "Recentes" },
   { id: "resolved", label: "Resolvidos" },
