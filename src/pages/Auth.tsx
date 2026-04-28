@@ -127,7 +127,8 @@ export default function Auth() {
           <span className="underline">Política de Privacidade</span>.
         </p>
       </section>
-    </main>
+      </main>
+    </div>
   );
 }
 
