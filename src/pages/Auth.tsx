@@ -27,7 +27,8 @@ export default function Auth() {
   };
 
   return (
-    <main className="min-h-screen relative overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-secondary/40">
+      <main className="mobile-shell relative overflow-hidden flex flex-col">
       {/* Fundo de mapa estilizado */}
       <div className="absolute inset-0 auth-map-bg" aria-hidden="true" />
 
