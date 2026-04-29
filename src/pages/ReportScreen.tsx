@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { Hint } from "@/components/Hint";
 import {
   findPossibleDuplicates,
   getCurrentPosition,
@@ -242,13 +243,15 @@ export default function ReportScreen() {
         {photoUrl ? (
           <div className="relative w-full aspect-[5/3] rounded-3xl overflow-hidden shadow-soft border border-border">
             <img src={photoUrl} alt="Foto do animal" className="size-full object-cover" />
-            <button
-              onClick={removePhoto}
-              aria-label="Remover foto"
-              className="absolute top-3 right-3 size-9 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft active:scale-95"
-            >
-              <X className="size-4" />
-            </button>
+            <Hint label="Remover foto" description="Apaga a foto enviada" side="left">
+              <button
+                onClick={removePhoto}
+                aria-label="Remover foto"
+                className="absolute top-3 right-3 size-9 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft active:scale-95"
+              >
+                <X className="size-4" />
+              </button>
+            </Hint>
             <button
               onClick={() => fileInputRef.current?.click()}
               className="absolute bottom-3 right-3 px-3 py-1.5 rounded-full bg-background/90 backdrop-blur text-xs font-semibold shadow-soft"

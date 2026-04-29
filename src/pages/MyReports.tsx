@@ -37,6 +37,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { ReportRow, UrgencyLevel } from "@/lib/reports";
+import { Hint } from "@/components/Hint";
 
 const URGENCY_OPTIONS: { id: UrgencyLevel; label: string }[] = [
   { id: "low", label: "Baixa" },
@@ -158,13 +159,15 @@ export default function MyReports() {
   return (
     <MobileShell>
       <header className="flex items-center gap-3">
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Voltar"
-          className="size-10 rounded-full bg-card border border-border grid place-items-center hover:bg-muted transition active:scale-95"
-        >
-          <ArrowLeft className="size-5" />
-        </button>
+        <Hint label="Voltar" description="Volta para a tela anterior" side="bottom">
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Voltar"
+            className="size-10 rounded-full bg-card border border-border grid place-items-center hover:bg-muted transition active:scale-95"
+          >
+            <ArrowLeft className="size-5" />
+          </button>
+        </Hint>
         <div>
           <h1 className="font-display text-2xl font-bold leading-tight">Minhas postagens</h1>
           <p className="text-xs text-muted-foreground">Edite, marque como resolvido ou apague.</p>
@@ -244,26 +247,32 @@ export default function MyReports() {
                 </div>
               </button>
               <div className="flex border-t border-border divide-x divide-border">
-                <button
-                  onClick={() => openEdit(r)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold text-foreground hover:bg-muted/50 transition"
-                >
-                  <Pencil className="size-3.5" /> Editar
-                </button>
-                {r.status !== "resolved" && (
+                <Hint label="Editar postagem" description="Atualizar título, descrição ou urgência">
                   <button
-                    onClick={() => markResolved(r)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold text-success hover:bg-success/10 transition"
+                    onClick={() => openEdit(r)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold text-foreground hover:bg-muted/50 transition"
                   >
-                    <CheckCircle2 className="size-3.5" /> Resolvido
+                    <Pencil className="size-3.5" /> Editar
                   </button>
+                </Hint>
+                {r.status !== "resolved" && (
+                  <Hint label="Marcar como resolvido" description="O caso some das listas ativas">
+                    <button
+                      onClick={() => markResolved(r)}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold text-success hover:bg-success/10 transition"
+                    >
+                      <CheckCircle2 className="size-3.5" /> Resolvido
+                    </button>
+                  </Hint>
                 )}
-                <button
-                  onClick={() => setDeleting(r)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold text-destructive hover:bg-destructive/10 transition"
-                >
-                  <Trash2 className="size-3.5" /> Apagar
-                </button>
+                <Hint label="Apagar postagem" description="Esta ação não pode ser desfeita">
+                  <button
+                    onClick={() => setDeleting(r)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold text-destructive hover:bg-destructive/10 transition"
+                  >
+                    <Trash2 className="size-3.5" /> Apagar
+                  </button>
+                </Hint>
               </div>
             </li>
           ))}

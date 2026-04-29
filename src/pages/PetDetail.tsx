@@ -24,6 +24,7 @@ import {
 import { ValidationBadge } from "@/components/ValidationBadge";
 import { SafetyWarningDialog } from "@/components/SafetyWarningDialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { Hint } from "@/components/Hint";
 
 export default function PetDetail() {
   const { id } = useParams();
@@ -146,16 +147,23 @@ export default function PetDetail() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-background" />
 
           <div className="absolute top-5 left-5 right-5 flex items-center justify-between">
-            <button
-              onClick={() => navigate(-1)}
-              className="size-11 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft"
-              aria-label="Voltar"
-            >
-              <ArrowLeft className="size-5" />
-            </button>
-            <div className="flex gap-2">
+            <Hint label="Voltar" description="Volta para a tela anterior" side="bottom">
               <button
-                onClick={async () => {
+                onClick={() => navigate(-1)}
+                className="size-11 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft"
+                aria-label="Voltar"
+              >
+                <ArrowLeft className="size-5" />
+              </button>
+            </Hint>
+            <div className="flex gap-2">
+              <Hint
+                label="Compartilhar caso"
+                description="Envie este caso para sua rede"
+                side="bottom"
+              >
+                <button
+                  onClick={async () => {
                   const data = { title: pet.title, text: `Ajude este caso na Pata Amiga: ${pet.title}`, url: window.location.href };
                   try {
                     if (navigator.share) await navigator.share(data);
@@ -170,16 +178,23 @@ export default function PetDetail() {
               >
                 <Share2 className="size-5" />
               </button>
-              <button
-                onClick={() => {
-                  setFavorited((v) => !v);
-                  toast.success(favorited ? "Removido dos favoritos" : "Adicionado aos favoritos");
-                }}
-                aria-label="Favoritar"
-                className="size-11 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft active:scale-95 transition"
+              </Hint>
+              <Hint
+                label="Favoritar"
+                description="Salve este caso para acompanhar"
+                side="bottom"
               >
-                <Heart className={`size-5 ${favorited ? "fill-primary text-primary" : ""}`} />
-              </button>
+                <button
+                  onClick={() => {
+                    setFavorited((v) => !v);
+                    toast.success(favorited ? "Removido dos favoritos" : "Adicionado aos favoritos");
+                  }}
+                  aria-label="Favoritar"
+                  className="size-11 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft active:scale-95 transition"
+                >
+                  <Heart className={`size-5 ${favorited ? "fill-primary text-primary" : ""}`} />
+                </button>
+              </Hint>
             </div>
           </div>
         </div>
