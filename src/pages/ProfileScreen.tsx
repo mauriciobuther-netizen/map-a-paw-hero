@@ -34,6 +34,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { EditProfileDialog } from "@/components/EditProfileDialog";
+import { Hint } from "@/components/Hint";
 
 export default function ProfileScreen() {
   const { profile, user, signOut } = useAuth();
@@ -84,13 +85,19 @@ export default function ProfileScreen() {
     <MobileShell>
       <header className="flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold">Perfil</h1>
-        <button
-          onClick={() => setSettingsOpen(true)}
-          aria-label="Abrir configurações"
-          className="size-10 rounded-full bg-card border border-border grid place-items-center hover:bg-muted transition-colors active:scale-95"
+        <Hint
+          label="Configurações"
+          description="Notificações, privacidade, conta e mais"
+          side="left"
         >
-          <Settings className="size-5" />
-        </button>
+          <button
+            onClick={() => setSettingsOpen(true)}
+            aria-label="Abrir configurações"
+            className="size-10 rounded-full bg-card border border-border grid place-items-center hover:bg-muted transition-colors active:scale-95"
+          >
+            <Settings className="size-5" />
+          </button>
+        </Hint>
       </header>
 
       <section className="mt-5 rounded-3xl gradient-primary text-primary-foreground p-6 shadow-glow relative overflow-hidden">

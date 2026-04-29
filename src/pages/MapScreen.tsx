@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { fetchActiveReports, rowToPetCase, getCurrentPosition, type ReportRow } from "@/lib/reports";
 import { toast } from "sonner";
 import type { PetCase } from "@/types/pet";
+import { Hint } from "@/components/Hint";
 
 const filters = [
   { id: "all", label: "Todos" },
@@ -123,14 +124,20 @@ export default function MapScreen() {
         </div>
 
         {/* Botão localizar */}
-        <button
-          onClick={centerOnMe}
-          disabled={locating}
-          aria-label="Centralizar"
-          className="absolute right-5 bottom-44 z-[1000] size-12 rounded-full bg-card shadow-elegant grid place-items-center border border-border/60 active:scale-95 transition disabled:opacity-60"
+        <Hint
+          label="Centralizar no meu local"
+          description="Usa o GPS para mover o mapa para sua posição"
+          side="left"
         >
-          <LocateFixed className={`size-5 text-foreground ${locating ? "animate-pulse" : ""}`} />
-        </button>
+          <button
+            onClick={centerOnMe}
+            disabled={locating}
+            aria-label="Centralizar"
+            className="absolute right-5 bottom-44 z-[1000] size-12 rounded-full bg-card shadow-elegant grid place-items-center border border-border/60 active:scale-95 transition disabled:opacity-60"
+          >
+            <LocateFixed className={`size-5 text-foreground ${locating ? "animate-pulse" : ""}`} />
+          </button>
+        </Hint>
 
         {/* Card flutuante do pin selecionado */}
         {selectedPet && (

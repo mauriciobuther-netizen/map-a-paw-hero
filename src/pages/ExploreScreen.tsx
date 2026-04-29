@@ -6,6 +6,7 @@ import { fetchActiveReports, rowToPetCase, type ReportRow } from "@/lib/reports"
 import type { PetCase } from "@/types/pet";
 import { Bell, Search, X } from "lucide-react";
 import { toast } from "sonner";
+import { Hint } from "@/components/Hint";
 
 const cats = [
   { id: "all", label: "Todos" },
@@ -76,18 +77,24 @@ export default function ExploreScreen() {
             <br /> de você hoje?
           </h1>
         </div>
-        <button
-          onClick={() =>
-            toast.message("Notificações", {
-              description: "Em breve você verá aqui alertas de casos urgentes perto de si.",
-            })
-          }
-          aria-label="Notificações"
-          className="size-11 rounded-full bg-card border border-border grid place-items-center shadow-soft relative active:scale-95 transition"
+        <Hint
+          label="Notificações"
+          description="Alertas de casos urgentes perto de você"
+          side="left"
         >
-          <Bell className="size-5" />
-          <span className="absolute top-2 right-2.5 size-2 rounded-full bg-urgent" />
-        </button>
+          <button
+            onClick={() =>
+              toast.message("Notificações", {
+                description: "Em breve você verá aqui alertas de casos urgentes perto de si.",
+              })
+            }
+            aria-label="Notificações"
+            className="size-11 rounded-full bg-card border border-border grid place-items-center shadow-soft relative active:scale-95 transition"
+          >
+            <Bell className="size-5" />
+            <span className="absolute top-2 right-2.5 size-2 rounded-full bg-urgent" />
+          </button>
+        </Hint>
       </header>
 
       <div className="mt-5 flex items-center gap-3 rounded-full bg-card border border-border px-4 py-3 shadow-soft focus-within:border-primary transition-colors">
@@ -100,13 +107,15 @@ export default function ExploreScreen() {
           aria-label="Buscar casos"
         />
         {query && (
-          <button
-            onClick={() => setQuery("")}
-            aria-label="Limpar busca"
-            className="size-6 rounded-full bg-muted grid place-items-center text-muted-foreground hover:text-foreground"
-          >
-            <X className="size-3.5" />
-          </button>
+          <Hint label="Limpar busca" side="left">
+            <button
+              onClick={() => setQuery("")}
+              aria-label="Limpar busca"
+              className="size-6 rounded-full bg-muted grid place-items-center text-muted-foreground hover:text-foreground"
+            >
+              <X className="size-3.5" />
+            </button>
+          </Hint>
         )}
       </div>
 
