@@ -29,7 +29,6 @@ export function FilterChips({ chips, active, onChange }: Props) {
       startScroll: el.scrollLeft,
       moved: 0,
     };
-    el.setPointerCapture(e.pointerId);
   }
 
   function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
@@ -37,24 +36,32 @@ export function FilterChips({ chips, active, onChange }: Props) {
     if (!el || !drag.current.active) return;
     const dx = e.clientX - drag.current.startX;
     drag.current.moved = Math.max(drag.current.moved, Math.abs(dx));
-    el.scrollLeft = drag.current.startScroll - dx;
+    // Só captura o ponteiro depois que o usuário moveu o suficiente para
+    // ser considerado um arraste — assim cliques simples continuam funcionando.
+    if (drag.current.moved > 5) {
+      try {
+        el.setPointerCapture(e.pointerId);
+      } catch {
+        /* noop */
+      }
+      el.scrollLeft = drag.current.startScroll - dx;
+    }
   }
 
   function endDrag(e: React.PointerEvent<HTMLDivElement>) {
     const el = scrollRef.current;
     if (!el) return;
-    if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
-    // pequeno timeout: bloqueia o click após arrastar de verdade
-    setTimeout(() => {
-      drag.current.active = false;
-    }, 0);
+    if (el.hasPointerCapture?.(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    drag.current.active = false;
   }
 
   function onClickCapture(e: React.MouseEvent) {
+    // Bloqueia o click apenas se houve arraste real
     if (drag.current.moved > 5) {
       e.preventDefault();
       e.stopPropagation();
     }
+    drag.current.moved = 0;
   }
 
   function onWheel(e: React.WheelEvent<HTMLDivElement>) {
@@ -73,7 +80,6 @@ export function FilterChips({ chips, active, onChange }: Props) {
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
-      onPointerLeave={endDrag}
       onClickCapture={onClickCapture}
       onWheel={onWheel}
       className="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 cursor-grab active:cursor-grabbing select-none touch-pan-x scroll-smooth"
