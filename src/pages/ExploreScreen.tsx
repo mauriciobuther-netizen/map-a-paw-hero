@@ -4,14 +4,14 @@ import { FilterChips } from "@/components/FilterChips";
 import { PetCard } from "@/components/PetCard";
 import { fetchActiveReports, rowToPetCase, type ReportRow } from "@/lib/reports";
 import type { PetCase } from "@/types/pet";
-import { Bell, Search, X } from "lucide-react";
+import { Bell, Search, X, Dog, Cat } from "lucide-react";
 import { toast } from "sonner";
 import { Hint } from "@/components/Hint";
 
 const cats = [
   { id: "all", label: "Todos" },
-  { id: "dog", label: "Cachorros", icon: "🐶" },
-  { id: "cat", label: "Gatos", icon: "🐱" },
+  { id: "dog", label: "Cachorros", Icon: Dog },
+  { id: "cat", label: "Gatos", Icon: Cat },
   { id: "urgent", label: "Urgente", icon: "🚨" },
   { id: "injured", label: "Feridos" },
   { id: "fed", label: "Já alimentados" },
