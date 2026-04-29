@@ -1,9 +1,11 @@
 import { cn } from "@/lib/utils";
+import type { LucideIcon } from "lucide-react";
 
 interface Chip {
   id: string;
   label: string;
   icon?: string;
+  Icon?: LucideIcon;
 }
 interface Props {
   chips: Chip[];
@@ -21,13 +23,17 @@ export function FilterChips({ chips, active, onChange }: Props) {
             key={c.id}
             onClick={() => onChange(c.id)}
             className={cn(
-              "shrink-0 rounded-full px-4 py-2 text-sm font-medium transition border",
+              "shrink-0 rounded-full px-4 py-2 text-sm font-medium transition border inline-flex items-center gap-1.5",
               isActive
                 ? "bg-foreground text-background border-foreground shadow-soft"
                 : "bg-card text-foreground border-border hover:border-foreground/40",
             )}
           >
-            {c.icon && <span className="mr-1.5">{c.icon}</span>}
+            {c.Icon ? (
+              <c.Icon className="size-4" strokeWidth={2.2} />
+            ) : c.icon ? (
+              <span>{c.icon}</span>
+            ) : null}
             {c.label}
           </button>
         );
