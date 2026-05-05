@@ -17,6 +17,7 @@ import {
   type ReportRow,
   type SpeciesType,
   type UrgencyLevel,
+  type CommunityStatus,
 } from "@/lib/reports";
 
 const URGENCY_OPTIONS: { id: UrgencyLevel; label: string; tone: string }[] = [
@@ -37,6 +38,7 @@ export default function ReportScreen() {
   const [uploading, setUploading] = useState(false);
   const [urgency, setUrgency] = useState<UrgencyLevel>("medium");
   const [riskTags, setRiskTags] = useState<string[]>([]);
+  const [communityStatus, setCommunityStatus] = useState<CommunityStatus>("none");
   const [coords, setCoords] = useState<{ lat: number; lng: number; acc?: number } | null>(null);
   const [locating, setLocating] = useState(false);
   const [publishing, setPublishing] = useState(false);
@@ -189,6 +191,7 @@ export default function ReportScreen() {
           main_image_url: photoUrl,
           image_metadata: { source: "user_camera", captured_at: new Date().toISOString() },
           city: "Teresina",
+          community_status: communityStatus,
         })
         .select("id")
         .single();
@@ -359,6 +362,35 @@ export default function ReportScreen() {
             </button>
           ))}
         </div>
+      </section>
+
+      <section className="mt-6">
+        <h2 className="font-semibold text-sm mb-3">Classificação do animal</h2>
+        <div className="grid grid-cols-3 gap-2">
+          {([
+            { id: "none" as const, label: "Abandonado", emoji: "🐾" },
+            { id: "community" as const, label: "Comunitário", emoji: "🏘️" },
+            { id: "neighborhood_star" as const, label: "Estrela do Bairro", emoji: "⭐" },
+          ]).map(({ id, label, emoji }) => (
+            <button
+              key={id}
+              onClick={() => setCommunityStatus(id)}
+              className={cn(
+                "rounded-2xl border-2 p-3 transition flex flex-col items-center gap-1.5 text-center",
+                communityStatus === id
+                  ? "border-primary bg-primary-soft text-primary shadow-soft"
+                  : "border-border bg-card text-foreground",
+              )}
+            >
+              <span className="text-xl">{emoji}</span>
+              <span className="font-semibold text-xs leading-tight">{label}</span>
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground mt-2 px-1">
+          <strong>Comunitário:</strong> vive no bairro e é alimentado por moradores. 
+          <strong> Estrela do Bairro:</strong> animal querido e cuidado pela comunidade.
+        </p>
       </section>
 
       <section className="mt-6">
