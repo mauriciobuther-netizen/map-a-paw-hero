@@ -26,6 +26,7 @@ export interface PetCase {
   id: string;
   species: Species;
   status: CaseStatus;
+  communityStatus?: "none" | "community" | "neighborhood_star";
   photos: string[];
   title: string;
   description: string;
