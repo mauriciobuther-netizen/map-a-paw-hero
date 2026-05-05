@@ -26,6 +26,7 @@ import { SafetyWarningDialog } from "@/components/SafetyWarningDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { Hint } from "@/components/Hint";
 import { openRoute } from "@/lib/openRoute";
+import { CommunityBadge } from "@/components/CommunityBadge";
 
 export default function PetDetail() {
   const { id } = useParams();
@@ -205,6 +206,9 @@ export default function PetDetail() {
             <div className="flex flex-wrap gap-2">
               <RescueStatusBadge status={pet.status} size="md" />
               <ValidationBadge status={row.validation_status} />
+              {pet.communityStatus && pet.communityStatus !== "none" && (
+                <CommunityBadge status={pet.communityStatus} size="md" />
+              )}
             </div>
             <h1 className="mt-3 font-display text-2xl font-bold text-balance leading-tight">
               {pet.title}

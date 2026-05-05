@@ -4,7 +4,7 @@ import { FilterChips } from "@/components/FilterChips";
 import { PetCard } from "@/components/PetCard";
 import { fetchActiveReports, rowToPetCase, type ReportRow } from "@/lib/reports";
 import type { PetCase } from "@/types/pet";
-import { Bell, Search, X, Dog, Cat } from "lucide-react";
+import { Bell, Search, X, Dog, Cat, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Hint } from "@/components/Hint";
 
@@ -12,6 +12,7 @@ const cats = [
   { id: "all", label: "Todos" },
   { id: "dog", label: "Cachorros", Icon: Dog },
   { id: "cat", label: "Gatos", Icon: Cat },
+  { id: "community", label: "Comunitários", Icon: Users },
   { id: "urgent", label: "Urgente", icon: "🚨" },
   { id: "injured", label: "Feridos" },
   { id: "fed", label: "Já alimentados" },
@@ -51,6 +52,8 @@ export default function ExploreScreen() {
       base = base.filter((p) => p.status === "urgent" || p.status === "injured");
     else if (filter === "dog") base = base.filter((p) => p.species === "dog");
     else if (filter === "cat") base = base.filter((p) => p.species === "cat");
+    else if (filter === "community")
+      base = base.filter((p) => p.communityStatus === "community" || p.communityStatus === "neighborhood_star");
     else if (filter === "injured") base = base.filter((p) => p.status === "injured");
     else if (filter === "fed") base = base.filter((p) => p.status === "fed");
 

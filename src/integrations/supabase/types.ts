@@ -20,6 +20,7 @@ export type Database = {
           behavior_tags: string[]
           city: string | null
           color_description: string | null
+          community_status: Database["public"]["Enums"]["community_status"]
           created_at: string
           created_by: string | null
           description: string
@@ -53,6 +54,7 @@ export type Database = {
           behavior_tags?: string[]
           city?: string | null
           color_description?: string | null
+          community_status?: Database["public"]["Enums"]["community_status"]
           created_at?: string
           created_by?: string | null
           description: string
@@ -86,6 +88,7 @@ export type Database = {
           behavior_tags?: string[]
           city?: string | null
           color_description?: string | null
+          community_status?: Database["public"]["Enums"]["community_status"]
           created_at?: string
           created_by?: string | null
           description?: string
@@ -403,6 +406,7 @@ export type Database = {
     }
     Enums: {
       app_role: "user" | "trusted_user" | "moderator" | "admin"
+      community_status: "none" | "community" | "neighborhood_star"
       report_status:
         | "active"
         | "under_review"
@@ -558,6 +562,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["user", "trusted_user", "moderator", "admin"],
+      community_status: ["none", "community", "neighborhood_star"],
       report_status: [
         "active",
         "under_review",

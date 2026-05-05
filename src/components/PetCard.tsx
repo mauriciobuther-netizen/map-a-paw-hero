@@ -1,5 +1,6 @@
 import { PetCase } from "@/types/pet";
 import { RescueStatusBadge } from "./RescueStatusBadge";
+import { CommunityBadge } from "./CommunityBadge";
 import { speciesLabel, timeAgo } from "@/lib/petHelpers";
 import { MapPin, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -35,6 +36,9 @@ export function PetCard({ pet, variant = "full" }: Props) {
         />
         <div className="flex-1 min-w-0 py-1">
           <RescueStatusBadge status={pet.status} />
+          {pet.communityStatus && pet.communityStatus !== "none" && (
+            <CommunityBadge status={pet.communityStatus} />
+          )}
           <h3 className="mt-1.5 font-display font-semibold text-sm leading-tight line-clamp-2">
             {pet.title}
           </h3>
@@ -63,7 +67,12 @@ export function PetCard({ pet, variant = "full" }: Props) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
           <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
-            <RescueStatusBadge status={pet.status} />
+            <div className="flex flex-wrap gap-1">
+              <RescueStatusBadge status={pet.status} />
+              {pet.communityStatus && pet.communityStatus !== "none" && (
+                <CommunityBadge status={pet.communityStatus} />
+              )}
+            </div>
             <button
               onClick={toggleSave}
               aria-label="Salvar"

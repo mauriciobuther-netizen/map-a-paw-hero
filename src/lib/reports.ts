@@ -7,6 +7,7 @@ export type ValidationAction = Database["public"]["Enums"]["validation_action"];
 export type ValidationStatus = Database["public"]["Enums"]["validation_status"];
 export type SpeciesType = Database["public"]["Enums"]["species_type"];
 export type UrgencyLevel = Database["public"]["Enums"]["urgency_level"];
+export type CommunityStatus = Database["public"]["Enums"]["community_status"];
 
 import type { PetCase } from "@/types/pet";
 
@@ -33,6 +34,7 @@ export function rowToPetCase(r: ReportRow): PetCase {
     reportedAt: r.reported_at,
     reportedBy: { id: r.created_by ?? "anon", name: "Voluntário" },
     helpers: 0,
+    communityStatus: (r as any).community_status ?? "none",
   };
 }
 
