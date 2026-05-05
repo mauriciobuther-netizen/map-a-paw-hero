@@ -25,6 +25,7 @@ import { ValidationBadge } from "@/components/ValidationBadge";
 import { SafetyWarningDialog } from "@/components/SafetyWarningDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { Hint } from "@/components/Hint";
+import { openRoute } from "@/lib/openRoute";
 
 export default function PetDetail() {
   const { id } = useParams();
@@ -383,8 +384,7 @@ export default function PetDetail() {
         onOpenChange={setSafetyOpen}
         onConfirm={() => {
           setSafetyOpen(false);
-          const url = `https://www.google.com/maps/dir/?api=1&destination=${pet.lat},${pet.lng}`;
-          window.open(url, "_blank", "noopener");
+          openRoute(pet.lat, pet.lng);
         }}
       />
     </div>

@@ -5,6 +5,8 @@ import { PetCase, Vet } from "@/types/pet";
 import { TERESINA_CENTER } from "@/data/mockData";
 import { isUrgent } from "@/lib/petHelpers";
 
+import { openRoute } from "@/lib/openRoute";
+
 interface Props {
   pets: PetCase[];
   vets?: Vet[];
@@ -147,7 +149,8 @@ export function PetMap({
             ${v.phone ? `<div style="font-size:11px;margin-top:4px"><a href="tel:${v.phone.replace(/[^0-9+]/g, "")}" style="color:hsl(28 91% 45%);font-weight:600;text-decoration:none">📞 ${v.phone}</a></div>` : ""}
             ${v.hours ? `<div style="font-size:11px;color:#666;margin-top:2px">🕒 ${v.hours}</div>` : ""}
             <a href="https://www.google.com/maps/dir/?api=1&destination=${v.lat},${v.lng}" target="_blank" rel="noopener"
-              style="display:inline-block;margin-top:8px;padding:6px 10px;background:hsl(28 91% 54%);color:white;border-radius:999px;font-size:11px;font-weight:600;text-decoration:none">
+              style="display:inline-block;margin-top:8px;padding:6px 10px;background:hsl(28 91% 54%);color:white;border-radius:999px;font-size:11px;font-weight:600;text-decoration:none"
+              onclick="event.preventDefault();navigator.geolocation.getCurrentPosition(function(p){window.open('https://www.google.com/maps/dir/?api=1&origin='+p.coords.latitude+','+p.coords.longitude+'&destination=${v.lat},${v.lng}&travelmode=driving','_blank')},function(){window.open('https://www.google.com/maps/dir/?api=1&destination=${v.lat},${v.lng}','_blank')})">
               Ver rota
             </a>
           </div>
