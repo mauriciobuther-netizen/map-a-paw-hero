@@ -23,14 +23,20 @@ function buildPetIcon(pet: PetCase, selected: boolean) {
     pet.status === "rescued" ||
     pet.status === "adopted" ||
     pet.status === "closed";
-  const bg = urgent
+  const isCommunity = pet.communityStatus === "community";
+  const isStar = pet.communityStatus === "neighborhood_star";
+  const bg = isStar
+    ? "hsl(45 93% 47%)"
+    : isCommunity
+    ? "hsl(217 91% 60%)"
+    : urgent
     ? "hsl(0 78% 56%)"
     : resolved
       ? "hsl(142 55% 42%)"
       : "hsl(28 91% 54%)";
-  const emoji = pet.species === "dog" ? "🐶" : "🐱";
+  const emoji = isStar ? "⭐" : isCommunity ? "🏘️" : pet.species === "dog" ? "🐶" : "🐱";
   const ring = selected ? "box-shadow: 0 0 0 4px hsl(28 91% 54% / 0.35);" : "";
-  const pulse = urgent ? "pin-pulse" : "";
+  const pulse = urgent ? "pin-pulse" : isStar ? "pin-pulse-star" : "";
   return L.divIcon({
     className: "custom-pin",
     iconSize: [42, 42],
