@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import {
-  Camera, MapPin, Dog, Cat, X, Loader2, AlertTriangle, ShieldAlert, CheckCircle2,
+  Camera, ImagePlus, MapPin, Dog, Cat, X, Loader2, AlertTriangle, ShieldAlert, CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -44,6 +44,7 @@ export default function ReportScreen() {
   const [publishing, setPublishing] = useState(false);
   const [duplicates, setDuplicates] = useState<ReportRow[] | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -243,6 +244,14 @@ export default function ReportScreen() {
           className="hidden"
           aria-hidden="true"
         />
+        <input
+          ref={galleryInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handlePhotoChange}
+          className="hidden"
+          aria-hidden="true"
+        />
         {photoUrl ? (
           <div className="relative w-full aspect-[5/3] rounded-3xl overflow-hidden shadow-soft border border-border">
             <img src={photoUrl} alt="Foto do animal" className="size-full object-cover" />
@@ -261,12 +270,18 @@ export default function ReportScreen() {
             >
               Trocar foto
             </button>
+            <button
+              onClick={() => galleryInputRef.current?.click()}
+              className="absolute bottom-3 left-3 px-3 py-1.5 rounded-full bg-background/90 backdrop-blur text-xs font-semibold shadow-soft"
+            >
+              📁 Galeria
+            </button>
           </div>
         ) : (
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="w-full aspect-[5/3] rounded-3xl bg-card border-2 border-dashed border-border grid place-items-center text-muted-foreground hover:border-primary hover:text-primary transition shadow-soft disabled:opacity-70"
+            className="w-full aspect-[5/3] rounded-3xl bg-card border-2 border-dashed border-border flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition shadow-soft disabled:opacity-70"
           >
             <div className="flex flex-col items-center gap-2">
               <div className="size-14 rounded-full gradient-primary grid place-items-center text-primary-foreground shadow-glow">
@@ -277,12 +292,28 @@ export default function ReportScreen() {
                 )}
               </div>
               <span className="text-sm font-medium">
-                {uploading ? "Enviando foto..." : "Adicionar foto do animal"}
+                {uploading ? "Enviando foto..." : "Tirar foto"}
               </span>
-              <span className="text-xs opacity-70">
-                {uploading ? "Aguarde um momento" : "Toque para tirar ou escolher"}
-              </span>
+              {!uploading && (
+                <span className="text-xs opacity-70">Toque para abrir a câmera</span>
+              )}
+              {uploading && (
+                <span className="text-xs opacity-70">Aguarde um momento</span>
+              )}
             </div>
+            {!uploading && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  galleryInputRef.current?.click();
+                }}
+                className="mt-4 flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-border bg-card text-foreground text-sm font-medium shadow-soft hover:border-primary hover:text-primary transition"
+              >
+                <ImagePlus className="size-4" />
+                Escolher da galeria
+              </button>
+            )}
           </button>
         )}
       </section>
