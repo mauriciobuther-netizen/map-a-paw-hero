@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { BottomNavigation } from "./BottomNavigation";
+import { TopBlurOverlay } from "./TopBlurOverlay";
 
 interface Props {
   children: ReactNode;
@@ -10,6 +11,7 @@ interface Props {
 export function MobileShell({ children, hideNav, fullBleed }: Props) {
   return (
     <div className="min-h-screen bg-secondary/40">
+      <TopBlurOverlay />
       <div className="mobile-shell pb-28">
         <div className={fullBleed ? "" : "px-5 pt-6"}>{children}</div>
       </div>

@@ -222,3 +222,26 @@
   @apply mx-auto w-full max-w-[480px] min-h-screen bg-background relative;
   box-shadow: 0 0 80px -20px hsl(0 0% 0% / 0.08);
 }
+
+/* iOS-style top scroll blur overlay */
+.top-blur-overlay {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--background) / 0.78) 0%,
+    hsl(var(--background) / 0.42) 45%,
+    hsl(var(--background) / 0) 100%
+  );
+}
+
+.dark .top-blur-overlay {
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--background) / 0.25) 0%,
+    hsl(var(--background) / 0.1) 45%,
+    hsl(var(--background) / 0) 100%
+  );
+}
