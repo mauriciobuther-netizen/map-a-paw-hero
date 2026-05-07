@@ -7,6 +7,7 @@ import type { PetCase } from "@/types/pet";
 import { Bell, Search, X, Dog, Cat, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Hint } from "@/components/Hint";
+import logo from "@/assets/logo.png";
 
 const cats = [
   { id: "all", label: "Todos" },
@@ -72,9 +73,12 @@ export default function ExploreScreen() {
     <MobileShell>
       <header className="flex items-start justify-between mb-2">
         <div>
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">
-            Olá, voluntário
-          </p>
+          <div className="flex items-center gap-2 mb-1">
+            <img src={logo} alt="Pata Amiga" className="w-8 h-8" />
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">
+              Olá, voluntário
+            </p>
+          </div>
           <h1 className="font-display text-[28px] font-bold leading-tight text-balance">
             Quem precisa
             <br /> de você hoje?
