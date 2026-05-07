@@ -225,14 +225,14 @@
 
 /* iOS-style top scroll blur overlay */
 .top-blur-overlay {
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  mask-image: linear-gradient(to bottom, black 0%, black 30%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 30%, transparent 100%);
   background: linear-gradient(
     to bottom,
-    hsl(var(--background) / 0.78) 0%,
-    hsl(var(--background) / 0.42) 45%,
+    hsl(var(--background) / 0.55) 0%,
+    hsl(var(--background) / 0.25) 40%,
     hsl(var(--background) / 0) 100%
   );
 }
