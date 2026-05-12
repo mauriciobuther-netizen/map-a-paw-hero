@@ -27,6 +27,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Hint } from "@/components/Hint";
 import { openRoute } from "@/lib/openRoute";
 import { CommunityBadge } from "@/components/CommunityBadge";
+import { useFavorites } from "@/hooks/useFavorites";
 
 export default function PetDetail() {
   const { id } = useParams();
@@ -38,7 +39,8 @@ export default function PetDetail() {
   const [counts, setCounts] = useState<Record<ValidationAction, number> | null>(null);
   const [busy, setBusy] = useState<ValidationAction | null>(null);
   const [safetyOpen, setSafetyOpen] = useState(false);
-  const [favorited, setFavorited] = useState(false);
+  const { isFavorite, toggle: toggleFavorite, signedIn } = useFavorites();
+  const favorited = id ? isFavorite(id) : false;
 
   useEffect(() => {
     if (!id) return;
@@ -187,9 +189,19 @@ export default function PetDetail() {
                 side="bottom"
               >
                 <button
-                  onClick={() => {
-                    setFavorited((v) => !v);
-                    toast.success(favorited ? "Removido dos favoritos" : "Adicionado aos favoritos");
+                  onClick={async () => {
+                    if (!signedIn) {
+                      toast.error("Faça login para favoritar");
+                      return;
+                    }
+                    if (!id) return;
+                    try {
+                      const nowSaved = await toggleFavorite(id);
+                      toast.success(nowSaved ? "Adicionado aos favoritos" : "Removido dos favoritos");
+                    } catch (err) {
+                      const msg = err instanceof Error ? err.message : "Tente novamente.";
+                      toast.error("Falha ao favoritar", { description: msg });
+                    }
                   }}
                   aria-label="Favoritar"
                   className="size-11 rounded-full bg-background/90 backdrop-blur grid place-items-center shadow-soft active:scale-95 transition"
