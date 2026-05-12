@@ -4,8 +4,8 @@ import { CommunityBadge } from "./CommunityBadge";
 import { speciesLabel, timeAgo } from "@/lib/petHelpers";
 import { MapPin, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import { toast } from "sonner";
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface Props {
   pet: PetCase;
@@ -13,13 +13,23 @@ interface Props {
 }
 
 export function PetCard({ pet, variant = "full" }: Props) {
-  const [saved, setSaved] = useState(false);
+  const { isFavorite, toggle, signedIn } = useFavorites();
+  const saved = isFavorite(pet.id);
 
-  const toggleSave = (e: React.MouseEvent) => {
+  const toggleSave = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSaved((v) => !v);
-    toast.success(saved ? "Removido dos favoritos" : "Salvo nos favoritos");
+    if (!signedIn) {
+      toast.error("Faça login para favoritar");
+      return;
+    }
+    try {
+      const nowSaved = await toggle(pet.id);
+      toast.success(nowSaved ? "Salvo nos favoritos" : "Removido dos favoritos");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Tente novamente.";
+      toast.error("Falha ao favoritar", { description: msg });
+    }
   };
 
   if (variant === "compact") {
