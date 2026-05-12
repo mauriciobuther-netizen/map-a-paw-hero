@@ -158,6 +158,51 @@ export type Database = {
         }
         Relationships: []
       }
+      community_stories: {
+        Row: {
+          action: string
+          after_photo_url: string
+          before_photo_url: string
+          created_at: string
+          created_by: string
+          id: string
+          is_active: boolean
+          likes_count: number
+          pet_name: string
+          rescuer_name: string
+          story: string
+          updated_at: string
+        }
+        Insert: {
+          action: string
+          after_photo_url: string
+          before_photo_url: string
+          created_at?: string
+          created_by: string
+          id?: string
+          is_active?: boolean
+          likes_count?: number
+          pet_name: string
+          rescuer_name: string
+          story: string
+          updated_at?: string
+        }
+        Update: {
+          action?: string
+          after_photo_url?: string
+          before_photo_url?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          is_active?: boolean
+          likes_count?: number
+          pet_name?: string
+          rescuer_name?: string
+          story?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_status: Database["public"]["Enums"]["user_account_status"]
@@ -299,6 +344,35 @@ export type Database = {
             columns: ["report_id"]
             isOneToOne: false
             referencedRelation: "animal_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_likes: {
+        Row: {
+          created_at: string
+          id: string
+          story_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          story_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          story_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_likes_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "community_stories"
             referencedColumns: ["id"]
           },
         ]
