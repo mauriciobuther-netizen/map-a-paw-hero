@@ -15,16 +15,16 @@ export const statusLabels: Record<CaseStatus, string> = {
 
 // classes Tailwind usando tokens semânticos
 export const statusClass: Record<CaseStatus, string> = {
-  spotted: "bg-secondary text-foreground",
-  needs_help: "bg-warning/15 text-warning-foreground border border-warning/30",
-  urgent: "bg-urgent text-urgent-foreground",
-  injured: "bg-urgent/90 text-urgent-foreground",
-  monitoring: "bg-accent text-accent-foreground",
-  fed: "bg-success/15 text-success border border-success/30",
-  rescued: "bg-success text-success-foreground",
-  in_adoption: "bg-primary-soft text-primary border border-primary/30",
-  adopted: "bg-success text-success-foreground",
-  closed: "bg-muted text-muted-foreground",
+  spotted: "bg-white text-foreground border border-border shadow-sm",
+  needs_help: "bg-warning text-warning-foreground border border-warning shadow-sm",
+  urgent: "bg-urgent text-urgent-foreground border border-urgent shadow-sm",
+  injured: "bg-urgent text-urgent-foreground border border-urgent shadow-sm",
+  monitoring: "bg-accent text-accent-foreground border border-primary/40 shadow-sm",
+  fed: "bg-success text-success-foreground border border-success shadow-sm",
+  rescued: "bg-success text-success-foreground border border-success shadow-sm",
+  in_adoption: "bg-primary text-primary-foreground border border-primary shadow-sm",
+  adopted: "bg-success text-success-foreground border border-success shadow-sm",
+  closed: "bg-muted text-foreground border border-border shadow-sm",
 };
 
 export const speciesLabel: Record<Species, string> = {

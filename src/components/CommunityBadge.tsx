@@ -7,12 +7,12 @@ const config: Record<Exclude<CommunityStatusType, "none">, { label: string; icon
   community: {
     label: "Comunitário",
     icon: Users,
-    tone: "bg-primary-soft text-primary border border-primary/30",
+    tone: "bg-primary text-primary-foreground border border-primary shadow-sm",
   },
   neighborhood_star: {
     label: "Estrela do Bairro",
     icon: Star,
-    tone: "bg-warning/15 text-warning-foreground border border-warning/30",
+    tone: "bg-warning text-warning-foreground border border-warning shadow-sm",
   },
 };
 
