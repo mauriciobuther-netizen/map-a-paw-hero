@@ -193,6 +193,79 @@ export default function ExploreScreen() {
           </div>
         )}
       </section>
+
+      <Sheet open={notifOpen} onOpenChange={setNotifOpen}>
+        <SheetContent
+          side="bottom"
+          className="rounded-t-3xl max-h-[85vh] overflow-y-auto p-0 border-border"
+        >
+          <div className="mx-auto mt-2 h-1.5 w-10 rounded-full bg-muted" />
+          <SheetHeader className="px-5 pt-4 pb-2 text-left">
+            <SheetTitle className="font-display text-xl flex items-center gap-2">
+              <Bell className="size-5 text-primary" /> Notificações
+            </SheetTitle>
+            <SheetDescription>
+              Casos recentes reportados na comunidade.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="px-5 pb-8">
+            {notifications.length === 0 ? (
+              <div className="rounded-2xl bg-muted/40 p-6 text-center text-sm text-muted-foreground">
+                Sem notificações por enquanto.
+              </div>
+            ) : (
+              <ul className="divide-y divide-border rounded-2xl bg-card border border-border shadow-soft overflow-hidden">
+                {notifications.map((n) => {
+                  const pet = rowToPetCase(n);
+                  const isUrgent = pet.status === "urgent" || pet.status === "injured";
+                  return (
+                    <li key={n.id}>
+                      <button
+                        onClick={() => {
+                          setNotifOpen(false);
+                          navigate(`/pet/${n.id}`);
+                        }}
+                        className="w-full flex items-start gap-3 p-4 text-left hover:bg-muted/40 active:bg-muted transition"
+                      >
+                        <div
+                          className={`size-10 rounded-full grid place-items-center shrink-0 ${
+                            isUrgent
+                              ? "bg-urgent/15 text-urgent"
+                              : "bg-primary-soft text-primary"
+                          }`}
+                        >
+                          {isUrgent ? (
+                            <AlertTriangle className="size-5" />
+                          ) : (
+                            <Bell className="size-5" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-semibold leading-tight truncate">
+                            {pet.title}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5 truncate">
+                            <MapPin className="size-3 shrink-0" />
+                            {pet.neighborhood || pet.address || "Localização não informada"}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground mt-1">
+                            {new Date(n.created_at).toLocaleString("pt-BR", {
+                              day: "2-digit",
+                              month: "short",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </div>
+                        </div>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </MobileShell>
   );
 }
