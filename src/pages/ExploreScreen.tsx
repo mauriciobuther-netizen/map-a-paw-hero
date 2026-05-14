@@ -4,10 +4,18 @@ import { FilterChips } from "@/components/FilterChips";
 import { PetCard } from "@/components/PetCard";
 import { fetchActiveReports, rowToPetCase, type ReportRow } from "@/lib/reports";
 import type { PetCase } from "@/types/pet";
-import { Bell, Search, X, Dog, Cat, Users } from "lucide-react";
+import { Bell, Search, X, Dog, Cat, Users, MapPin, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { Hint } from "@/components/Hint";
 import logo from "@/assets/logo.png";
+import { useNavigate } from "react-router-dom";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 const cats = [
   { id: "all", label: "Todos" },
@@ -24,6 +32,12 @@ export default function ExploreScreen() {
   const [query, setQuery] = useState("");
   const [rows, setRows] = useState<ReportRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [lastSeen, setLastSeen] = useState<number>(() => {
+    const v = localStorage.getItem("notif_last_seen");
+    return v ? Number(v) : 0;
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     let active = true;
@@ -37,6 +51,30 @@ export default function ExploreScreen() {
   }, []);
 
   const pets: PetCase[] = useMemo(() => rows.map(rowToPetCase), [rows]);
+
+  const notifications = useMemo(() => {
+    return [...rows]
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      )
+      .slice(0, 20);
+  }, [rows]);
+
+  const unreadCount = useMemo(
+    () =>
+      notifications.filter(
+        (n) => new Date(n.created_at).getTime() > lastSeen,
+      ).length,
+    [notifications, lastSeen],
+  );
+
+  const openNotifications = () => {
+    setNotifOpen(true);
+    const now = Date.now();
+    localStorage.setItem("notif_last_seen", String(now));
+    setLastSeen(now);
+  };
 
   const normalize = (s: string) =>
     s
@@ -90,16 +128,16 @@ export default function ExploreScreen() {
           side="left"
         >
           <button
-            onClick={() =>
-              toast.message("Notificações", {
-                description: "Em breve você verá aqui alertas de casos urgentes perto de si.",
-              })
-            }
+            onClick={openNotifications}
             aria-label="Notificações"
             className="size-11 rounded-full bg-card border border-border grid place-items-center shadow-soft relative active:scale-95 transition"
           >
             <Bell className="size-5" />
-            <span className="absolute top-2 right-2.5 size-2 rounded-full bg-urgent" />
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-urgent text-urgent-foreground text-[10px] font-bold grid place-items-center">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
           </button>
         </Hint>
       </header>
