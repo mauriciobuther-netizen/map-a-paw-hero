@@ -192,16 +192,16 @@ export default function MapScreen() {
                             setSelected(p.id);
                             setSearchOpen(false);
                             setQuery("");
-                            if (p.location) {
-                              setUserPos({ lat: p.location.lat, lng: p.location.lng });
+                            if (p.lat && p.lng) {
+                              setUserPos({ lat: p.lat, lng: p.lng });
                             }
                           }}
                           onDoubleClick={() => navigate(`/pet/${p.id}`)}
                           className="w-full flex items-start gap-3 p-3 text-left hover:bg-muted/40 active:bg-muted transition"
                         >
-                          {p.photoUrl ? (
+                          {p.photos?.[0] ? (
                             <img
-                              src={p.photoUrl}
+                              src={p.photos[0]}
                               alt=""
                               className="size-10 rounded-lg object-cover shrink-0"
                             />
