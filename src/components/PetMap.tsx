@@ -35,46 +35,47 @@ function buildPetIcon(pet: PetCase, selected: boolean) {
       ? "hsl(142 55% 42%)"
       : "hsl(28 91% 54%)";
   const emoji = isStar ? "⭐" : isCommunity ? "🏘️" : pet.species === "dog" ? "🐶" : "🐱";
-  const ring = selected ? "box-shadow: 0 0 0 4px hsl(28 91% 54% / 0.35);" : "";
   const pulse = urgent ? "pin-pulse" : isStar ? "pin-pulse-star" : "";
+  const pulseColor = urgent ? "hsl(0 78% 56%)" : "hsl(45 93% 47%)";
   return L.divIcon({
     className: "custom-pin",
     iconSize: [42, 42],
     iconAnchor: [21, 38],
     html: `
-      <div class="${pulse}" style="
-        width:42px;height:42px;border-radius:50%;
-        background:${bg};display:grid;place-items:center;
-        border:3px solid white;${ring}
-        box-shadow:0 6px 16px -4px rgba(0,0,0,.35);
-        font-size:20px;
-      ">${emoji}</div>
+      <div style="width:42px;height:42px;position:relative;">
+        ${selected ? `<div style="position:absolute;inset:-5px;border-radius:50% 50% 50% 0;background:hsl(28 91% 54% / 0.35);transform:rotate(-45deg);filter:blur(2px);"></div>` : ""}
+        <div class="${pulse}" style="
+          position:absolute;inset:0;width:42px;height:42px;
+          border-radius:50% 50% 50% 0;background:${bg};color:${pulseColor};
+          display:grid;place-items:center;border:3px solid white;
+          transform:rotate(-45deg);filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));
+          font-size:20px;line-height:1;
+        "><span style="transform:rotate(45deg);">${emoji}</span></div>
+      </div>
     `,
   });
 }
 
 function buildVetIcon(type: Vet["type"] = "clinic") {
-  const palette: Record<Vet["type"], { bg: string; ring: string; label: string }> = {
-    hospital: { bg: "hsl(0 78% 56%)", ring: "hsl(0 78% 56%)", label: "+" },
-    clinic: { bg: "white", ring: "hsl(28 91% 54%)", label: "+" },
-    ngo: { bg: "hsl(142 55% 42%)", ring: "hsl(142 55% 42%)", label: "♥" },
+  const palette: Record<Vet["type"], { bg: string; ring: string; label: string; text: string }> = {
+    hospital: { bg: "hsl(0 78% 56%)", ring: "hsl(0 78% 56%)", label: "+", text: "white" },
+    clinic: { bg: "white", ring: "hsl(28 91% 54%)", label: "+", text: "hsl(28 91% 45%)" },
+    ngo: { bg: "hsl(142 55% 42%)", ring: "hsl(142 55% 42%)", label: "♥", text: "white" },
   };
   const p = palette[type];
-  const isHospital = type === "hospital";
-  const isNgo = type === "ngo";
-  const textColor = isHospital || isNgo ? "white" : "hsl(28 91% 45%)";
   return L.divIcon({
     className: "custom-pin",
     iconSize: [34, 34],
     iconAnchor: [17, 30],
     html: `
-      <div style="
-        width:34px;height:34px;border-radius:12px;
-        background:${p.bg};display:grid;place-items:center;
-        border:2px solid ${p.ring};
-        box-shadow:0 4px 12px -2px rgba(0,0,0,.25);
-        color:${textColor};font-weight:700;font-size:16px;line-height:1;
-      ">${p.label}</div>
+      <div style="width:34px;height:34px;position:relative;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25));">
+        <div style="
+          position:absolute;inset:0;width:34px;height:34px;
+          border-radius:50% 50% 50% 0;background:${p.bg};
+          display:grid;place-items:center;border:2px solid ${p.ring};
+          transform:rotate(-45deg);line-height:1;
+        "><span style="transform:rotate(45deg);color:${p.text};font-weight:700;font-size:14px;">${p.label}</span></div>
+      </div>
     `,
   });
 }
