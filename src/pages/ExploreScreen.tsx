@@ -134,7 +134,7 @@ export default function ExploreScreen() {
           >
             <Bell className="size-5" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-urgent text-urgent-foreground text-[10px] font-bold grid place-items-center">
+              <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-urgent text-urgent-foreground text-[10px] font-bold grid place-items-center border-2 border-card shadow-sm z-10">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             )}
