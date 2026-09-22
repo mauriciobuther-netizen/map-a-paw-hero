@@ -103,8 +103,10 @@ export function PetMap({
       attributionControl: true,
     }).setView(center, 13);
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap",
+      maxZoom: 19,
+      crossOrigin: true,
     }).addTo(map);
 
     markersRef.current = L.layerGroup().addTo(map);
