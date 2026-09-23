@@ -104,8 +104,8 @@ export function PetMap({
       attributionControl: true,
     }).setView(center, 13);
 
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap",
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+      attribution: "&copy; Esri — Esri, DeLorme, NAVTEQ",
       maxZoom: 19,
       crossOrigin: true,
     }).addTo(map);
