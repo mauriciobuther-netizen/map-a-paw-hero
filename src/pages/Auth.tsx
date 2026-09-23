@@ -71,10 +71,11 @@ export default function Auth() {
             <MapPin className="size-3.5 text-primary" /> Teresina · Piauí
           </div>
 
-          <h1 className="mt-4 font-display text-[34px] font-bold leading-[1.05] text-foreground text-balance">
-            Cada patinha no mapa
-            <br />
-            <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+          <h1 className="mt-4 font-display text-[30px] sm:text-[32px] font-semibold leading-[1.12] tracking-[-0.02em] text-foreground text-balance max-w-[95%]">
+            <span className="block text-foreground/95">
+              Cada patinha no mapa
+            </span>
+            <span className="block mt-1.5 text-primary">
               é uma vida à espera.
             </span>
           </h1>
