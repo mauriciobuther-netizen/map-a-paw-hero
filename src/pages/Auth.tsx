@@ -75,7 +75,7 @@ export default function Auth() {
             <span className="block text-foreground/95">
               Cada patinha no mapa
             </span>
-            <span className="block mt-1.5 text-primary">
+            <span className="block mt-2 text-primary">
               é uma vida à espera.
             </span>
           </h1>
