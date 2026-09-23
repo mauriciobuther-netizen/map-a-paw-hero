@@ -104,9 +104,10 @@ export function PetMap({
       attributionControl: true,
     }).setView(center, 13);
 
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap",
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      attribution: "&copy; OpenStreetMap &copy; CARTO",
       maxZoom: 19,
+      subdomains: "abcd",
       crossOrigin: true,
     }).addTo(map);
 
