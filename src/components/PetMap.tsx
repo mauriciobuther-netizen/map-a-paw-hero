@@ -104,10 +104,10 @@ export function PetMap({
       attributionControl: true,
     }).setView(center, 13);
 
-    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
-      attribution: "&copy; Esri — Esri, HERE, Garmin, USGS, METI/NASA",
-      maxZoom: 19,
-      maxNativeZoom: 16,
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+      maxZoom: 20,
+      maxNativeZoom: 19,
       crossOrigin: true,
     }).addTo(map);
 
