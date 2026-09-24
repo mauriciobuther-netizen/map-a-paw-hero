@@ -1,7 +1,5 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "maplibre-gl/dist/maplibre-gl.css";
-import { maplibreGL } from "@maplibre/maplibre-gl-leaflet";
 import { useEffect, useMemo, useRef } from "react";
 import { PetCase, Vet } from "@/types/pet";
 import { TERESINA_CENTER } from "@/data/mockData";
@@ -106,8 +104,11 @@ export function PetMap({
       attributionControl: true,
     }).setView(center, 13);
 
-    maplibreGL({
-      style: "https://tiles.openfreemap.org/styles/bright",
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+      maxZoom: 20,
+      maxNativeZoom: 19,
+      crossOrigin: true,
     }).addTo(map);
 
     markersRef.current = L.layerGroup().addTo(map);
