@@ -141,7 +141,7 @@
 /* Leaflet overrides — pins customizados */
 .leaflet-container {
   font-family: 'Inter', sans-serif;
-  background: #e6e6e6;
+  background: hsl(var(--secondary));
 }
 .leaflet-control-attribution {
   font-size: 10px !important;
