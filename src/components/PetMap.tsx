@@ -107,7 +107,7 @@ export function PetMap({
     }).setView(center, 13);
 
     maplibreGL({
-      style: "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/styles/root.json",
+      style: "https://tiles.openfreemap.org/styles/bright",
     }).addTo(map);
 
     markersRef.current = L.layerGroup().addTo(map);
