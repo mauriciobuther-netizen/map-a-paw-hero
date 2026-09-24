@@ -108,7 +108,6 @@ export function PetMap({
 
     maplibreGL({
       style: "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/styles/root.json",
-      attribution: "&copy; Esri — HERE, Garmin, OpenStreetMap contributors",
     }).addTo(map);
 
     markersRef.current = L.layerGroup().addTo(map);
