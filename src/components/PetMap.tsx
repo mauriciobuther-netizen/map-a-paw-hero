@@ -17,6 +17,17 @@ interface Props {
   className?: string;
 }
 
+// Patinha branca desenhada em SVG (independe de fonte/emoji)
+const WHITE_PAW_SVG = `
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="white" aria-hidden="true">
+    <ellipse cx="5.2" cy="10.2" rx="2" ry="2.6"/>
+    <ellipse cx="9.4" cy="6.6" rx="2.1" ry="2.8"/>
+    <ellipse cx="14.6" cy="6.6" rx="2.1" ry="2.8"/>
+    <ellipse cx="18.8" cy="10.2" rx="2" ry="2.6"/>
+    <path d="M12 10.2c-3.4 0-6 2.4-6 5.3 0 2 1.5 3.3 3.4 3.3 1 0 1.7-.3 2.6-.3s1.6.3 2.6.3c1.9 0 3.4-1.3 3.4-3.3 0-2.9-2.6-5.3-6-5.3z"/>
+  </svg>
+`;
+
 function buildPetIcon(pet: PetCase, selected: boolean) {
   const urgent = isUrgent(pet.status);
   const resolved =
@@ -25,16 +36,17 @@ function buildPetIcon(pet: PetCase, selected: boolean) {
     pet.status === "closed";
   const isCommunity = pet.communityStatus === "community";
   const isStar = pet.communityStatus === "neighborhood_star";
+  const isDog = pet.species === "dog";
+  // Cão = vermelho, gato = laranja; status especiais mantêm sua cor
   const bg = isStar
     ? "hsl(45 93% 47%)"
     : isCommunity
     ? "hsl(217 91% 60%)"
-    : urgent
-    ? "hsl(0 78% 56%)"
     : resolved
       ? "hsl(142 55% 42%)"
-      : "hsl(28 91% 54%)";
-  const emoji = isStar ? "⭐" : isCommunity ? "🏘️" : pet.species === "dog" ? "🐶" : "🐱";
+      : isDog
+        ? "hsl(0 78% 56%)"
+        : "hsl(28 91% 54%)";
   const pulse = urgent ? "pin-pulse" : isStar ? "pin-pulse-star" : "";
   const pulseColor = urgent ? "hsl(0 78% 56%)" : "hsl(45 93% 47%)";
   return L.divIcon({
@@ -49,8 +61,7 @@ function buildPetIcon(pet: PetCase, selected: boolean) {
           border-radius:50% 50% 50% 0;background:${bg};color:${pulseColor};
           display:grid;place-items:center;border:3px solid white;
           transform:rotate(-45deg);filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));
-          font-size:20px;line-height:1;
-        "><span style="transform:rotate(45deg);">${emoji}</span></div>
+        "><span style="transform:rotate(45deg);display:grid;place-items:center;line-height:0;">${WHITE_PAW_SVG}</span></div>
       </div>
     `,
   });
