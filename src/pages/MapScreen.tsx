@@ -81,6 +81,17 @@ export default function MapScreen() {
 
   const selectedPet = pets.find((p) => p.id === selected);
 
+  // Dica do filtro ativo: orienta o usuário a procurar os pins da espécie no mapa
+  const speciesHint =
+    filter === "dog" || filter === "cat"
+      ? {
+          isDog: filter === "dog",
+          count: pets.length,
+          label: filter === "dog" ? "cachorros" : "gatos",
+          singular: filter === "dog" ? "cachorro" : "gato",
+        }
+      : null;
+
   const normalize = (s: string) =>
     s
       .toLowerCase()
@@ -232,6 +243,46 @@ export default function MapScreen() {
           <div className="mt-4 pointer-events-auto">
             <FilterChips chips={filters} active={filter} onChange={setFilter} />
           </div>
+
+          {speciesHint && !loading && (
+            <div className="mt-2 pointer-events-auto animate-float-up">
+              <div className="rounded-2xl bg-card/95 backdrop-blur-xl border border-border/60 shadow-elegant px-4 py-3 flex items-center gap-3">
+                <span
+                  aria-hidden="true"
+                  className="size-3 rounded-full shrink-0 ring-2 ring-white shadow-soft"
+                  style={{
+                    background: speciesHint.isDog
+                      ? "hsl(0 78% 56%)"
+                      : "hsl(28 91% 54%)",
+                  }}
+                />
+                {speciesHint.count > 0 ? (
+                  <p className="text-xs leading-snug text-foreground">
+                    <span className="font-semibold">
+                      {speciesHint.count}{" "}
+                      {speciesHint.count === 1 ? speciesHint.singular : speciesHint.label}{" "}
+                      no mapa
+                    </span>{" "}
+                    — procure os pins {speciesHint.isDog ? "vermelhos" : "laranja"} e toque
+                    em um para ver os detalhes.
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-xs leading-snug text-muted-foreground flex-1">
+                      Nenhum {speciesHint.singular} no mapa ainda. Conhece um que precise
+                      de ajuda?
+                    </p>
+                    <Link
+                      to="/app/report"
+                      className="shrink-0 rounded-full gradient-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground active:scale-95 transition"
+                    >
+                      Publicar caso
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Botão localizar */}
