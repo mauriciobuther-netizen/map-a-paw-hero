@@ -107,6 +107,7 @@ export function PetMap({
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.LayerGroup | null>(null);
   const vetsRef = useRef<L.LayerGroup | null>(null);
+  const fitFirstRunRef = useRef(true);
 
   useEffect(() => {
     if (!mapElementRef.current || mapRef.current) return;
@@ -213,7 +214,11 @@ export function PetMap({
       });
     }
     // pets só muda quando os dados carregam ou o filtro troca — evita re-enquadrar
-    // enquanto o usuário explora o mapa.
+    // enquanto o usuário explora o mapa. Pula a primeira execução para o mapa abrir
+    // centrado em Teresina.
+    const firstRun = fitFirstRunRef.current;
+    fitFirstRunRef.current = false;
+    if (firstRun) return;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fitKey, pets]);
 
