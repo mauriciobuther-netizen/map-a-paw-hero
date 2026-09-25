@@ -196,9 +196,10 @@ export function PetMap({
 
   // Ao trocar de filtro (fitKey), aproxima o mapa para enquadrar os pins visíveis —
   // assim o usuário vê imediatamente onde estão os animais daquele filtro.
+  // Com "Todos" o mapa não se move: abre centrado em Teresina.
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    if (!map || !fitKey || fitKey === "all") return;
     const pts = pets
       .filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lng))
       .map((p) => [p.lat, p.lng] as [number, number]);
@@ -214,11 +215,7 @@ export function PetMap({
       });
     }
     // pets só muda quando os dados carregam ou o filtro troca — evita re-enquadrar
-    // enquanto o usuário explora o mapa. Pula a primeira execução para o mapa abrir
-    // centrado em Teresina.
-    const firstRun = fitFirstRunRef.current;
-    fitFirstRunRef.current = false;
-    if (firstRun) return;
+    // enquanto o usuário explora o mapa.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fitKey, pets]);
 
