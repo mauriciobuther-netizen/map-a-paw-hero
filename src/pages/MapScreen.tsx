@@ -131,6 +131,7 @@ export default function MapScreen() {
             selectedId={selected}
             onSelect={setSelected}
             center={userPos ?? undefined}
+            fitKey={filter}
             className="size-full"
           />
         </div>
