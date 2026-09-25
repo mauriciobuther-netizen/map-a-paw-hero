@@ -14,6 +14,7 @@ interface Props {
   onSelect?: (id: string) => void;
   showVets?: boolean;
   center?: { lat: number; lng: number };
+  fitKey?: string;
   className?: string;
 }
 
@@ -98,6 +99,7 @@ export function PetMap({
   onSelect,
   showVets = true,
   center: centerProp,
+  fitKey,
   className,
 }: Props) {
   const center = useMemo<[number, number]>(() => TERESINA_CENTER, []);
@@ -105,6 +107,7 @@ export function PetMap({
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.LayerGroup | null>(null);
   const vetsRef = useRef<L.LayerGroup | null>(null);
+  const fitFirstRunRef = useRef(true);
 
   useEffect(() => {
     if (!mapElementRef.current || mapRef.current) return;
@@ -190,6 +193,31 @@ export function PetMap({
     if (!mapRef.current || !centerProp) return;
     mapRef.current.flyTo([centerProp.lat, centerProp.lng], 15, { duration: 0.8 });
   }, [centerProp]);
+
+  // Ao trocar de filtro (fitKey), aproxima o mapa para enquadrar os pins visíveis —
+  // assim o usuário vê imediatamente onde estão os animais daquele filtro.
+  // Com "Todos" o mapa não se move: abre centrado em Teresina.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !fitKey || fitKey === "all") return;
+    const pts = pets
+      .filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lng))
+      .map((p) => [p.lat, p.lng] as [number, number]);
+    if (pts.length === 0) return;
+    if (pts.length === 1) {
+      map.flyTo(pts[0], 15, { duration: 0.8 });
+    } else {
+      map.flyToBounds(L.latLngBounds(pts), {
+        paddingTopLeft: [40, 170],
+        paddingBottomRight: [40, 160],
+        maxZoom: 15,
+        duration: 0.8,
+      });
+    }
+    // pets só muda quando os dados carregam ou o filtro troca — evita re-enquadrar
+    // enquanto o usuário explora o mapa.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fitKey, pets]);
 
   return (
     <div className={className}>
