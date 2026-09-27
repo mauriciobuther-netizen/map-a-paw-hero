@@ -446,8 +446,8 @@ function SettingsSheet({
             <LogOut className="size-4" /> Sair da conta
           </button>
 
-          <p className="text-center text-[11px] text-muted-foreground">
-            Feito com 🐾 em Teresina
+          <p className="text-center text-[11px] text-muted-foreground flex items-center justify-center gap-1">
+            Feito com <PawPrint className="size-3 text-primary" /> em Teresina
           </p>
         </div>
       </SheetContent>
