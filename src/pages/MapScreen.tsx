@@ -66,10 +66,12 @@ export default function MapScreen() {
         return allPets.filter((p) => p.species === "cat");
       case "injured":
         return allPets.filter((p) => p.status === "injured");
-      case "recent":
-        return [...allPets].sort(
-          (a, b) => +new Date(b.reportedAt) - +new Date(a.reportedAt),
-        );
+      case "recent": {
+        const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        return allPets
+          .filter((p) => +new Date(p.reportedAt) >= cutoff)
+          .sort((a, b) => +new Date(b.reportedAt) - +new Date(a.reportedAt));
+      }
       case "resolved":
         return allPets.filter(
           (p) => p.status === "rescued" || p.status === "adopted" || p.status === "closed",
@@ -243,6 +245,24 @@ export default function MapScreen() {
           <div className="mt-4 pointer-events-auto">
             <FilterChips chips={filters} active={filter} onChange={setFilter} />
           </div>
+
+          {filter === "recent" && !loading && (
+            <div className="mt-2 pointer-events-auto animate-float-up">
+              <div className="rounded-2xl bg-card/95 backdrop-blur-xl border border-border/60 shadow-elegant px-4 py-3">
+                <p className="text-xs leading-snug text-foreground">
+                  {pets.length > 0 ? (
+                    <>
+                      <strong>{pets.length}</strong>{" "}
+                      {pets.length === 1 ? "caso publicado" : "casos publicados"} nos últimos 7 dias
+                      — toque em um pin para ver.
+                    </>
+                  ) : (
+                    <>Nenhum caso publicado nos últimos 7 dias.</>
+                  )}
+                </p>
+              </div>
+            </div>
+          )}
 
           {speciesHint && !loading && (
             <div className="mt-2 pointer-events-auto animate-float-up">
