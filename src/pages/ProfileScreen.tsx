@@ -22,6 +22,10 @@ import {
   UserCog,
   MapPinned,
   FileText,
+  PawPrint,
+  Medal,
+  ShieldCheck,
+  HeartHandshake,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
