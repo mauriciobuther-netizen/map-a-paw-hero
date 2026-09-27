@@ -22,6 +22,10 @@ import {
   UserCog,
   MapPinned,
   FileText,
+  PawPrint,
+  Medal,
+  ShieldCheck,
+  HeartHandshake,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -35,6 +39,15 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { EditProfileDialog } from "@/components/EditProfileDialog";
 import { Hint } from "@/components/Hint";
+
+// Conquistas com ícones Lucide consistentes (substituem os emojis do mock)
+const badgeIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  b1: PawPrint,
+  b2: Star,
+  b3: Medal,
+  b4: ShieldCheck,
+  b5: HeartHandshake,
+};
 
 export default function ProfileScreen() {
   const { profile, user, signOut } = useAuth();
@@ -177,8 +190,23 @@ export default function ProfileScreen() {
                   : "bg-secondary/40 border-border/40 opacity-60",
               )}
             >
-              <div className={cn("size-12 mx-auto rounded-full grid place-items-center text-2xl", b.earned ? "bg-primary-soft" : "bg-muted")}>
-                {b.icon}
+              <div
+                className={cn(
+                  "relative size-12 mx-auto rounded-full grid place-items-center",
+                  b.earned
+                    ? "bg-primary-soft text-primary shadow-soft ring-1 ring-primary/15"
+                    : "bg-muted text-muted-foreground/60",
+                )}
+              >
+                {(() => {
+                  const Icon = badgeIcons[b.id] ?? PawPrint;
+                  return <Icon className="size-5" strokeWidth={2.2} />;
+                })()}
+                {!b.earned && (
+                  <span className="absolute -bottom-1 -right-1 size-5 rounded-full bg-card border border-border grid place-items-center shadow-soft">
+                    <Lock className="size-3 text-muted-foreground" />
+                  </span>
+                )}
               </div>
               <div className="mt-2 text-[11px] font-semibold leading-tight">{b.name}</div>
             </div>
@@ -418,8 +446,8 @@ function SettingsSheet({
             <LogOut className="size-4" /> Sair da conta
           </button>
 
-          <p className="text-center text-[11px] text-muted-foreground">
-            Feito com 🐾 em Teresina
+          <p className="text-center text-[11px] text-muted-foreground flex items-center justify-center gap-1">
+            Feito com <PawPrint className="size-3 text-primary" /> em Teresina
           </p>
         </div>
       </SheetContent>
