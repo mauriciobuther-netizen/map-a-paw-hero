@@ -190,8 +190,23 @@ export default function ProfileScreen() {
                   : "bg-secondary/40 border-border/40 opacity-60",
               )}
             >
-              <div className={cn("size-12 mx-auto rounded-full grid place-items-center text-2xl", b.earned ? "bg-primary-soft" : "bg-muted")}>
-                {b.icon}
+              <div
+                className={cn(
+                  "relative size-12 mx-auto rounded-full grid place-items-center",
+                  b.earned
+                    ? "bg-primary-soft text-primary shadow-soft ring-1 ring-primary/15"
+                    : "bg-muted text-muted-foreground/60",
+                )}
+              >
+                {(() => {
+                  const Icon = badgeIcons[b.id] ?? PawPrint;
+                  return <Icon className="size-5" strokeWidth={2.2} />;
+                })()}
+                {!b.earned && (
+                  <span className="absolute -bottom-1 -right-1 size-5 rounded-full bg-card border border-border grid place-items-center shadow-soft">
+                    <Lock className="size-3 text-muted-foreground" />
+                  </span>
+                )}
               </div>
               <div className="mt-2 text-[11px] font-semibold leading-tight">{b.name}</div>
             </div>
