@@ -40,6 +40,15 @@ import { toast } from "@/hooks/use-toast";
 import { EditProfileDialog } from "@/components/EditProfileDialog";
 import { Hint } from "@/components/Hint";
 
+// Conquistas com ícones Lucide consistentes (substituem os emojis do mock)
+const badgeIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  b1: PawPrint,
+  b2: Star,
+  b3: Medal,
+  b4: ShieldCheck,
+  b5: HeartHandshake,
+};
+
 export default function ProfileScreen() {
   const { profile, user, signOut } = useAuth();
   const navigate = useNavigate();
